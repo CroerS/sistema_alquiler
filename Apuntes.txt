@@ -1,0 +1,42 @@
+video fuente: https://youtu.be/XXMczd98pTY?si=MykZ8NWIv54WV3rM
+https://github.com/truizdiaz/back-jwt-angular-node.git
+https://github.com/truizdiaz/front-jwt-angular-node.git
+
+npm install express bcrypt cors dotenv jsonwebtoken sequelize mysql2 --paquetes requeridos
+npm install typescript --save-dev
+npm i nodemon --save-dev
+npx tsc -- ini
+
+
+        COMANDO DE TRABAJO
+
+
+PARA CORRER EJECUTA
+npm install
+npm i --save-dev @types/dotenv
+
+RUN
+npx tsc  --crear dist con js (primero asegurate de cambiar la conexion a la bd)
+
+npx nodemon dist/index.js  --ejcutar servidor de desarrollo
+npm run dev --atajo del dist/index.js(se lo configuro en package)
+
+npx tsc--watch  --reload (cada vez que haya un cambio se lo va actualizar en el js)
+npm run typescript  --atajo del reload (se lo configuro en package)
+
+
+
+
+
+
+---------------------- ANGULAR ----------------------
+
+npm install
+ng serve --o
+
+npm install -g @angular/cli  --si notienes angular cli debes instalarlo
+ng --version
+
+
+otras herramientoas:
+jwt.io
