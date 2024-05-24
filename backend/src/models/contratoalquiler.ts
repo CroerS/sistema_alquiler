@@ -1,6 +1,9 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../db/connection';
+import { Cuarto } from './cuartos';
+import { Inquilino } from './inquilino';
 
+// const Inquilino = require('./Inquilino');
 export const ContratoAlquiler = sequelize.define('ContratoAlquiler', {
     id: {
         type: DataTypes.INTEGER,
@@ -13,19 +16,27 @@ export const ContratoAlquiler = sequelize.define('ContratoAlquiler', {
     fecha_fin: {
         type: DataTypes.DATE
     },
-    inquilinoId: {
+    id_cuarto: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Inquilino',
-            key: 'id'
+          model: Cuarto,
+          key: 'id'
         }
-    },
-    cuartoId: {
+      },
+      id_inquilino: {
         type: DataTypes.INTEGER,
         references: {
-            model: 'Cuarto',
+            model: Inquilino, // Asegúrate de que coincida con el nombre del modelo
             key: 'id'
         }
     }
     // Otros campos como monto del alquiler, frecuencia de pago, etc.
 });
+
+
+// Define the association
+ContratoAlquiler.belongsTo(Cuarto, { foreignKey: 'id_cuarto' });
+Cuarto.hasMany(ContratoAlquiler, { foreignKey: 'id_cuarto' });
+
+ContratoAlquiler.belongsTo(Inquilino, { foreignKey: 'id_inquilino' });
+Inquilino.hasMany(ContratoAlquiler, { foreignKey: 'id_inquilino' });

@@ -4,6 +4,9 @@ import routesProduct from '../routes/product';
 import routesUser from '../routes/user';
 import { Product } from './product';
 import { User } from './user';
+import { Cuarto } from './cuartos';
+import { ContratoAlquiler } from './contratoalquiler';
+import { Inquilino } from './inquilino';
 
 class Server {
     private app: Application;
@@ -41,11 +44,14 @@ class Server {
     async dbConnect() {
         try {
             await Product.sync()
-            await User.sync();
+            await Inquilino.sync()
+            await Cuarto.sync()
+            await ContratoAlquiler.sync()
+            await User.sync()
         } catch (error) {
             console.error('Unable to connect to the database:', error);
         }
     }
-}
+ }
 
 export default Server;
