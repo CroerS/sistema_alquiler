@@ -16,27 +16,26 @@ export const ContratoAlquiler = sequelize.define('ContratoAlquiler', {
     fecha_fin: {
         type: DataTypes.DATE
     },
+    id_inquilino: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: Inquilino, // Asegúrate de que coincida con el nombre del modelo
+            key: 'id'
+        }
+    },
     id_cuarto: {
         type: DataTypes.INTEGER,
         references: {
           model: Cuarto,
           key: 'id'
         }
-      },
-      id_inquilino: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Inquilino, // Asegúrate de que coincida con el nombre del modelo
-            key: 'id'
-        }
-    }
+      }
     // Otros campos como monto del alquiler, frecuencia de pago, etc.
 });
 
 
 // Define the association
+ContratoAlquiler.belongsTo(Inquilino, { foreignKey: 'id_inquilino' });
 ContratoAlquiler.belongsTo(Cuarto, { foreignKey: 'id_cuarto' });
 Cuarto.hasMany(ContratoAlquiler, { foreignKey: 'id_cuarto' });
-
-ContratoAlquiler.belongsTo(Inquilino, { foreignKey: 'id_inquilino' });
 Inquilino.hasMany(ContratoAlquiler, { foreignKey: 'id_inquilino' });
