@@ -1,19 +1,31 @@
-<app-navbar></app-navbar>
-<div class="container mt-2 text-center">
-    <h2>Productos</h2>
-    <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">Descripcion</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of listProduct">
-            <td>{{ item.name }}</td>
-            <td>{{ item.description }} </td>
-          </tr>
-         
-        </tbody>
-      </table>
-</div>
+  <div class="container-fluid px-4">
+       <h1 class="mt-4">Pieza</h1>
+   
+      <div class="card mb-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-end">
+              <div class="form-group">
+                <a class="btn btn-info btn-sm" href=""><i class="fas fa-plus"></i>&nbsp;&nbsp;Agregar</a>
+                <a class="btn btn-danger btn-sm" href=""><i class="far fa-trash-alt"></i>&nbsp;Eliminados</a>
+              </div>
+            </div>
+            <div class="text-center">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Descripcion</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of listProduct">
+                      <td>{{ item.name }}</td>
+                      <td>{{ item.description }} </td>
+                    </tr>
+                   
+                  </tbody>
+                </table>
+              </div>
+          </div>
+      </div> 
+  </div>
