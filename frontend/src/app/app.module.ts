@@ -21,6 +21,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { CuartoComponent } from './components/cuarto/cuarto.component';
+import { InquilinoComponent } from './components/inquilino/inquilino.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { CuartoComponent } from './components/cuarto/cuarto.component';
     HeaderComponent,
     FooterComponent,
     SidebarComponent,
-    CuartoComponent
+    CuartoComponent,
+    InquilinoComponent
   ],
   imports: [
     BrowserModule,

@@ -3,6 +3,7 @@ import cors from 'cors';
 import routesProduct from '../routes/product';
 import routesUser from '../routes/user';
 import routesCuarto from '../routes/cuartos';
+import routesInquilino from '../routes/inquilino';
 import { Product } from './product';
 import { User } from './user';
 import { Cuarto } from './cuartos';
@@ -33,6 +34,7 @@ class Server {
         this.app.use('/api/products', routesProduct);
         this.app.use('/api/users', routesUser);
         this.app.use('/api/cuartos', routesCuarto);
+        this.app.use('/api/inquilinos', routesInquilino);
     }
 
     midlewares() {
