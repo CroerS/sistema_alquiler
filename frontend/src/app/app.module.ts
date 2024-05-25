@@ -20,6 +20,7 @@ import { AddTokenInterceptor } from './utils/add-token.interceptor';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { CuartoComponent } from './components/cuarto/cuarto.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
     SpinnerComponent,
     HeaderComponent,
     FooterComponent,
-    SidebarComponent
+    SidebarComponent,
+    CuartoComponent
   ],
   imports: [
     BrowserModule,

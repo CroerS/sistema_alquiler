@@ -8,11 +8,13 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 
 // Guards
 import { AuthGuard } from './utils/auth.guard';
+import { CuartoComponent } from './components/cuarto/cuarto.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'signIn', component: SignInComponent },
+  { path: 'cuarto', component: CuartoComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'login', pathMatch: 'full' }
 ];

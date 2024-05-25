@@ -6,3 +6,4 @@ export const getProducts = async (req: Request, res: Response) => {
 
     res.json(listProducts)
 }
+

@@ -14,4 +14,7 @@ export const Inquilino = sequelize.define('Inquilino', {
         type: DataTypes.STRING(200)
     }
     // Otros campos relevantes como dirección, teléfono, etc.
+},
+{
+    timestamps: false,
 });

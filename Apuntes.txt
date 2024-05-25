@@ -40,3 +40,9 @@ ng --version
 
 otras herramientoas:
 jwt.io
+
+
+---------------------- ANGULAR COMANDOS PARA DESARROLLO ----------------------
+ng g s services/user 		----> CREAR SERVICIO EN EL DIRECTORIO
+ng g c components/product	----> CREAR COMPONENTE
+
