@@ -1,23 +1,23 @@
 import { Request, Response } from 'express';
-import { Pago} from '../models/pago';
+import { RegistroDeuda} from '../models/registrodeuda';
 
 //listar Registros
-export const getPagos = async (req: Request, res: Response) => {
-    const listPago = await Pago.findAll();
+export const getRegistroDeudas = async (req: Request, res: Response) => {
+    const listRegistroDeuda = await RegistroDeuda.findAll();
 
-    res.json(listPago)
+    res.json(listRegistroDeuda)
 }
 
 //Buscar Registro
-export const GetPago = async (req: Request, res: Response) => {
+export const GetRegistroDeuda = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
-        // Actualizamos pago en la base de datos
-        const SetPago = await Pago.findOne({ where: { id } });
+        // Actualizamos contratoalquiler en la base de datos
+        const SetRegistroDeuda = await RegistroDeuda.findOne({ where: { id } });
         
-        if (SetPago) {
-            res.status(200).json(SetPago);
+        if (SetRegistroDeuda) {
+            res.status(200).json(SetRegistroDeuda);
         } else {
             res.status(404).json({
                 msg: 'descripcion no encontrado',
@@ -33,19 +33,19 @@ export const GetPago = async (req: Request, res: Response) => {
 }
 
 //Guardar Registro
-export const NewPago = async (req: Request, res: Response) => {
-    const{ monto, metodopago, fecha, id_contrato }= req.body;
+export const NewRegistroDeuda = async (req: Request, res: Response) => {
+    const{ monto, estado, fecha, id_contrato }= req.body;
     try {
-        // Guardarmos cuartos en la base de datos
-        await Pago.create({
+        // Guardarmos RegistroDeudas en la base de datos
+        await RegistroDeuda.create({
             monto: monto,
-            metodopago: metodopago,
+            estado: estado,
             fecha: fecha,
             id_contrato: id_contrato
         })
     
         res.json({
-            msg: `Pago  ${monto} creado exitosamente!`
+            msg: `RegistroDeuda  ${monto} creado exitosamente!`
         })
     } catch (error) {
         res.status(400).json({
@@ -56,30 +56,30 @@ export const NewPago = async (req: Request, res: Response) => {
 }
 
 //Modificar Registro
-export const UpdatePago = async (req: Request, res: Response) => {
+export const UpdateRegistroDeuda = async (req: Request, res: Response) => {
     var { id } = req.params;
-    var{ monto, metodopago, fecha, id_contrato }= req.body;
+    var{ monto, estado, fecha, id_contrato}= req.body;
 
     try {
-           // Buscar el pago actual en la base de datos
-           var existingContratoAlquiler = await Pago.findOne({ where: { id } });
+           // Buscar el cuartos actual en la base de datos
+           var existingRegistroDeuda = await RegistroDeuda.findOne({ where: { id } });
         
-           if (!existingContratoAlquiler) {
+           if (!existingRegistroDeuda) {
                return res.status(404).json({
                    msg: 'Registro no encontrado',
                });
            }
            
-           // Actualizamos el pagos en la base de datos
-           const [updated] = await Pago.update({
+           // Actualizamos el cuartos en la base de datos
+           const [updated] = await RegistroDeuda.update({
                monto: monto,
-               metodopago: metodopago,
+               estado: estado,
                fecha: fecha,
                id_contrato: id_contrato
            }, { where: { id } });
    
            if (updated) {
-               const updatedProduct = await Pago.findOne({ where: { id } });
+               const updatedProduct = await RegistroDeuda.findOne({ where: { id } });
                res.status(200).json({
                    msg: `Registro ${monto} actualizado exitosamente!`,
                    product: updatedProduct
@@ -99,12 +99,12 @@ export const UpdatePago = async (req: Request, res: Response) => {
 }
 
 //Eliminar Registro
-export const DeletePago = async (req: Request, res: Response) => {
+export const DeleteRegistroDeuda = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
-        // Eliminar pagos en la base de datos
-        const deleted = await Pago.destroy({
+        // Eliminar registrodeuda en la base de datos
+        const deleted = await RegistroDeuda.destroy({
             where: { id }
         });
     

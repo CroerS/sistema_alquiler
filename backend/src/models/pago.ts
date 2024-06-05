@@ -20,12 +20,15 @@ export const Pago = sequelize.define('Pago', {
     },
     id_contrato: {
         type: DataTypes.INTEGER,
-        references: {
-          model: ContratoAlquiler,
-          key: 'id'
-        }
+        // references: {
+        //   model: ContratoAlquiler,
+        //   key: 'id'
+        // }
       }
     // Otros campos como monto del alquiler, frecuencia de pago, etc.
+},
+{
+    timestamps: false,
 });
 
 

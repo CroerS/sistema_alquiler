@@ -12,11 +12,11 @@ export const NotificacionPago = sequelize.define('NotificacionPago', {
     mensaje: {
         type: DataTypes.STRING(200)
     },
-    fecha: {
-        type: DataTypes.DATE
-    },
     estado: {
         type: DataTypes.TINYINT
+    },
+    fecha: {
+        type: DataTypes.DATE
     },
     id_contrato: {
         type: DataTypes.INTEGER,

@@ -1,23 +1,23 @@
 import { Request, Response } from 'express';
-import { Pago} from '../models/pago';
+import { NotificacionPago} from '../models/notificacionpago';
 
 //listar Registros
-export const getPagos = async (req: Request, res: Response) => {
-    const listPago = await Pago.findAll();
+export const getNotificacionPagos = async (req: Request, res: Response) => {
+    const listNotificacionPago = await NotificacionPago.findAll();
 
-    res.json(listPago)
+    res.json(listNotificacionPago)
 }
 
 //Buscar Registro
-export const GetPago = async (req: Request, res: Response) => {
+export const GetNotificacionPago = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
-        // Actualizamos pago en la base de datos
-        const SetPago = await Pago.findOne({ where: { id } });
+        // Actualizamos contratoalquiler en la base de datos
+        const SetNotificacionPago = await NotificacionPago.findOne({ where: { id } });
         
-        if (SetPago) {
-            res.status(200).json(SetPago);
+        if (SetNotificacionPago) {
+            res.status(200).json(SetNotificacionPago);
         } else {
             res.status(404).json({
                 msg: 'descripcion no encontrado',
@@ -33,19 +33,19 @@ export const GetPago = async (req: Request, res: Response) => {
 }
 
 //Guardar Registro
-export const NewPago = async (req: Request, res: Response) => {
-    const{ monto, metodopago, fecha, id_contrato }= req.body;
+export const NewNotificacionPago = async (req: Request, res: Response) => {
+    const{ mensaje, estado, fecha, id_contrato }= req.body;
     try {
-        // Guardarmos cuartos en la base de datos
-        await Pago.create({
-            monto: monto,
-            metodopago: metodopago,
+        // Guardarmos NotificacionPago la base de datos
+        await NotificacionPago.create({
+            mensaje: mensaje,
+            estado: estado,
             fecha: fecha,
             id_contrato: id_contrato
         })
     
         res.json({
-            msg: `Pago  ${monto} creado exitosamente!`
+            msg: `NotificacionPago  ${mensaje} creado exitosamente!`
         })
     } catch (error) {
         res.status(400).json({
@@ -56,32 +56,32 @@ export const NewPago = async (req: Request, res: Response) => {
 }
 
 //Modificar Registro
-export const UpdatePago = async (req: Request, res: Response) => {
+export const UpdateNotificacionPago = async (req: Request, res: Response) => {
     var { id } = req.params;
-    var{ monto, metodopago, fecha, id_contrato }= req.body;
+    var{ mensaje, estado, fecha, id_contrato }= req.body;
 
     try {
-           // Buscar el pago actual en la base de datos
-           var existingContratoAlquiler = await Pago.findOne({ where: { id } });
+           // Buscar el cuartos actual en la base de datos
+           var existingRegistroDeuda = await NotificacionPago.findOne({ where: { id } });
         
-           if (!existingContratoAlquiler) {
+           if (!existingRegistroDeuda) {
                return res.status(404).json({
                    msg: 'Registro no encontrado',
                });
            }
            
-           // Actualizamos el pagos en la base de datos
-           const [updated] = await Pago.update({
-               monto: monto,
-               metodopago: metodopago,
+           // Actualizamos el cuartos en la base de datos
+           const [updated] = await NotificacionPago.update({
+               mensaje: mensaje,
+               estado: estado,
                fecha: fecha,
                id_contrato: id_contrato
            }, { where: { id } });
    
            if (updated) {
-               const updatedProduct = await Pago.findOne({ where: { id } });
+               const updatedProduct = await NotificacionPago.findOne({ where: { id } });
                res.status(200).json({
-                   msg: `Registro ${monto} actualizado exitosamente!`,
+                   msg: `Registro ${mensaje} actualizado exitosamente!`,
                    product: updatedProduct
                });
            } else {
@@ -99,12 +99,12 @@ export const UpdatePago = async (req: Request, res: Response) => {
 }
 
 //Eliminar Registro
-export const DeletePago = async (req: Request, res: Response) => {
+export const DeleteNotificacionPago = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
-        // Eliminar pagos en la base de datos
-        const deleted = await Pago.destroy({
+        // Eliminar registrodeuda en la base de datos
+        const deleted = await NotificacionPago.destroy({
             where: { id }
         });
     

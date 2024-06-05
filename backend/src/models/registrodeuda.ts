@@ -12,14 +12,11 @@ export const RegistroDeuda = sequelize.define('RegistroDeuda', {
     monto: {
         type: DataTypes.DECIMAL(10, 2)
     },
-    fecha: {
-        type: DataTypes.DATE
-    },
-    motivo: {
-        type: DataTypes.STRING(200)
-    },
     estado: {
         type: DataTypes.TINYINT
+    },
+    fecha: {
+        type: DataTypes.DATE
     },
     id_contrato: {
         type: DataTypes.INTEGER,
