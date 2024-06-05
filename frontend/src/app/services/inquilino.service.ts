@@ -13,7 +13,7 @@ export class InquilinoService {
 
   constructor(private http: HttpClient) {
     this.myAppUrl = environment.endpoint;
-    this.myApiUrl = 'api/inquilino/'
+    this.myApiUrl = 'api/inquilinos/'
   }
 
   getList(): Observable<Inquilino[]> {

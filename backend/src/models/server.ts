@@ -9,6 +9,9 @@ import { User } from './user';
 import { Cuarto } from './cuartos';
 import { ContratoAlquiler } from './contratoalquiler';
 import { Inquilino } from './inquilino';
+import { Pago } from './pago';
+import { RegistroDeuda } from './registrodeuda';
+import { NotificacionPago } from './notificacionpago';
 
 class Server {
     private app: Application;
@@ -51,6 +54,9 @@ class Server {
             await Inquilino.sync()
             await Cuarto.sync()
             await ContratoAlquiler.sync()
+            await Pago.sync()
+            await RegistroDeuda.sync()
+            await NotificacionPago.sync()
             await User.sync()
         } catch (error) {
             console.error('Unable to connect to the database:', error);
