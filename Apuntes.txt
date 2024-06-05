@@ -46,3 +46,5 @@ jwt.io
 ng g s services/user 		----> CREAR SERVICIO EN EL DIRECTORIO
 ng g c components/product	----> CREAR COMPONENTE
 
+--instalar jquery
+npm install jquery --save

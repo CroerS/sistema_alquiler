@@ -30,6 +30,7 @@
             ],
             "scripts": [
               "src/assets/js/all.js",
+              "node_modules/jquery/dist/jquery.min.js",
               "src/assets/js/bootstrap.bundle.min.js",
               "src/assets/js/scripts.js"
             ]

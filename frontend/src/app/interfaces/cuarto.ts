@@ -1,5 +1,7 @@
 export interface Cuarto {
     id: number,
     numero: string,
-    ubicacion: string
+    descripcion: string,
+    dimension: string,
+    costo: number,
 }

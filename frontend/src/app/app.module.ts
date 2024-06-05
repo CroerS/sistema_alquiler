@@ -22,6 +22,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { CuartoComponent } from './components/cuarto/cuarto.component';
 import { InquilinoComponent } from './components/inquilino/inquilino.component';
+import { ContratoComponent } from './components/contrato/contrato.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { InquilinoComponent } from './components/inquilino/inquilino.component';
     FooterComponent,
     SidebarComponent,
     CuartoComponent,
-    InquilinoComponent
+    InquilinoComponent,
+    ContratoComponent
   ],
   imports: [
     BrowserModule,

@@ -4,7 +4,7 @@ import routesProduct from '../routes/product';
 import routesUser from '../routes/user';
 import routesCuarto from '../routes/cuartos';
 import routesInquilino from '../routes/inquilino';
-
+import routesContrato from '../routes/contrato';
 import routesPago from '../routes/pago';
 import routesRegistroDeuda from '../routes/registrodeuda';
 import routesNotificacionPago from '../routes/notificacionpago';
@@ -42,7 +42,7 @@ class Server {
         this.app.use('/api/users', routesUser);
         this.app.use('/api/cuartos', routesCuarto);
         this.app.use('/api/inquilinos', routesInquilino);
-
+        this.app.use('/api/contratos', routesContrato);
         this.app.use('/api/pagos', routesPago);
         this.app.use('/api/registrodeudas', routesRegistroDeuda);
         this.app.use('/api/notificacionpagos', routesNotificacionPago);

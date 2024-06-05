@@ -7,8 +7,7 @@ import { ErrorService } from 'src/app/services/error.service';
 
 @Component({
   selector: 'app-cuarto',
-  templateUrl: './cuarto.component.html',
-  styleUrls: ['./cuarto.component.css']
+  templateUrl: './cuarto.component.html'
 })
 export class CuartoComponent implements OnInit {
 
@@ -17,7 +16,9 @@ export class CuartoComponent implements OnInit {
   id: number | undefined;
 
   numero: string = '';
-  ubicacion: string = '';
+  descripcion: string = '';
+  dimension: string = '';
+  costo: number | undefined;
   loading: boolean = false;
 
   //Contructor
@@ -41,7 +42,7 @@ export class CuartoComponent implements OnInit {
 
   addCuarto(){
     // Validamos que el Cuarto ingrese valores
-    if (this.numero == '' || this.ubicacion == '') {
+    if (this.numero == '' || this.dimension == '') {
       this.toastr.error('Todos los campos son obligatorios', 'Error');
       return;
     }
@@ -50,7 +51,9 @@ export class CuartoComponent implements OnInit {
     var cuarto:  any = {
       id: (this.id== undefined)?0:this.id,
       numero: this.numero,
-      ubicacion: this.ubicacion
+      descripcion: this.descripcion,
+      dimension: this.dimension,
+      costo: this.costo,
     }
 
     this.loading = true;
@@ -92,7 +95,9 @@ export class CuartoComponent implements OnInit {
     this.accion = 'Actualizar';
     this.id = cuarto.id;
     this.numero = cuarto.numero,
-    this.ubicacion = cuarto.ubicacion
+    this.descripcion = cuarto.descripcion,
+    this.dimension = cuarto.dimension,
+    this.costo = cuarto.costo
    }
 
    DeleteCuarto(id: number){
@@ -112,7 +117,9 @@ export class CuartoComponent implements OnInit {
 
    private resetForm() {
     this.numero = '';
-    this.ubicacion = '';
+    this.descripcion = '';
+    this.dimension = '';
+    this.costo = 0;
     this.id = undefined;
   }
 
