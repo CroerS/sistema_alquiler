@@ -8,10 +8,16 @@ export const Cuarto = sequelize.define('cuarto', {
         autoIncrement: true
     },
     numero: {
-        type: DataTypes.STRING(50)
+        type: DataTypes.INTEGER
     },
-    ubicacion: {
+    descripcion: {
         type: DataTypes.STRING(200)
+    },
+    dimension: {
+        type: DataTypes.STRING(20)
+    },
+    costo: {
+        type: DataTypes.DECIMAL(10,2)
     }
     // Otros campos relevantes como tamaño, comodidades, etc.
 },

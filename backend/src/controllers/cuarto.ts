@@ -34,12 +34,14 @@ export const GetCuarto = async (req: Request, res: Response) => {
 
 //Guardar Registro
 export const NewCuarto = async (req: Request, res: Response) => {
-    const{ numero, ubicacion }= req.body;
+    const{ numero, descripcion, dimension, costo }= req.body;
     try {
         // Guardarmos cuartos en la base de datos
         await Cuarto.create({
             numero: numero,
-            ubicacion: ubicacion
+            descripcion: descripcion,
+            dimension: dimension,
+            costo: costo
         })
     
         res.json({
@@ -56,7 +58,7 @@ export const NewCuarto = async (req: Request, res: Response) => {
 //Modificar Registro
 export const UpdateCuarto = async (req: Request, res: Response) => {
     var { id } = req.params;
-    var{ numero, ubicacion}= req.body;
+    var{ numero, descripcion,  dimension, costo}= req.body;
 
     try {
            // Buscar el cuartos actual en la base de datos
@@ -71,7 +73,9 @@ export const UpdateCuarto = async (req: Request, res: Response) => {
            // Actualizamos el cuartos en la base de datos
            const [updated] = await Cuarto.update({
                numero: numero,
-               ubicacion: ubicacion
+               descripcion: descripcion,
+               dimension: dimension,
+               costo: costo
            }, { where: { id } });
    
            if (updated) {
