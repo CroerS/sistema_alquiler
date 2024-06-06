@@ -14,7 +14,7 @@ import { Cuarto } from './cuartos';
 import { ContratoAlquiler } from './contratoalquiler';
 import { Inquilino } from './inquilino';
 import { Pago } from './pago';
-import { RegistroDeuda } from './deuda';
+import { Deuda } from './deuda';
 import { NotificacionPago } from './notificacionpago';
 
 class Server {
@@ -44,7 +44,7 @@ class Server {
         this.app.use('/api/inquilinos', routesInquilino);
         this.app.use('/api/contratos', routesContrato);
         this.app.use('/api/pagos', routesPago);
-        this.app.use('/api/registrodeudas', routesRegistroDeuda);
+        this.app.use('/api/deudas', routesRegistroDeuda);
         this.app.use('/api/notificacionpagos', routesNotificacionPago);
     }
 
@@ -63,7 +63,7 @@ class Server {
             await Cuarto.sync()
             await ContratoAlquiler.sync()
             await Pago.sync()
-            await RegistroDeuda.sync()
+            await Deuda.sync()
             await NotificacionPago.sync()
             await User.sync()
         } catch (error) {
