@@ -6,7 +6,7 @@ import routesCuarto from '../routes/cuartos';
 import routesInquilino from '../routes/inquilino';
 import routesContrato from '../routes/contrato';
 import routesPago from '../routes/pago';
-import routesRegistroDeuda from '../routes/registrodeuda';
+import routesRegistroDeuda from '../routes/deuda';
 import routesNotificacionPago from '../routes/notificacionpago';
 import { Product } from './product';
 import { User } from './user';
@@ -14,7 +14,7 @@ import { Cuarto } from './cuartos';
 import { ContratoAlquiler } from './contratoalquiler';
 import { Inquilino } from './inquilino';
 import { Pago } from './pago';
-import { RegistroDeuda } from './registrodeuda';
+import { RegistroDeuda } from './deuda';
 import { NotificacionPago } from './notificacionpago';
 
 class Server {

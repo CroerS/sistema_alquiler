@@ -3,21 +3,22 @@ import sequelize from '../db/connection';
 import { ContratoAlquiler } from './contratoalquiler';
 
 // const Inquilino = require('./Inquilino');
-export const RegistroDeuda = sequelize.define('RegistroDeuda', {
+export const Deuda = sequelize.define('Deuda', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    monto: {
+    monto_deuda: {
         type: DataTypes.DECIMAL(10, 2)
+    },
+    mes:{
+        type: DataTypes.STRING(20)
     },
     estado: {
         type: DataTypes.TINYINT
     },
-    fecha: {
-        type: DataTypes.DATE
-    },
+    
     id_contrato: {
         type: DataTypes.INTEGER,
         // references: {
@@ -34,5 +35,5 @@ export const RegistroDeuda = sequelize.define('RegistroDeuda', {
 
 
 // Define the association
-RegistroDeuda.belongsTo(ContratoAlquiler, { foreignKey: 'id_contrato' });
-ContratoAlquiler.hasMany(RegistroDeuda, { foreignKey: 'id_contrato' });
+Deuda.belongsTo(ContratoAlquiler, { foreignKey: 'id_contrato' });
+ContratoAlquiler.hasMany(Deuda, { foreignKey: 'id_contrato' });

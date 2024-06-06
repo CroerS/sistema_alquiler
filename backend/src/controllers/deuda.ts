@@ -1,23 +1,23 @@
 import { Request, Response } from 'express';
-import { RegistroDeuda} from '../models/registrodeuda';
+import { Deuda} from '../models/deuda';
 
 //listar Registros
-export const getRegistroDeudas = async (req: Request, res: Response) => {
-    const listRegistroDeuda = await RegistroDeuda.findAll();
+export const getDeudas = async (req: Request, res: Response) => {
+    const listDeuda = await Deuda.findAll();
 
-    res.json(listRegistroDeuda)
+    res.json(listDeuda)
 }
 
 //Buscar Registro
-export const GetRegistroDeuda = async (req: Request, res: Response) => {
+export const GetDeuda = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
         // Actualizamos contratoalquiler en la base de datos
-        const SetRegistroDeuda = await RegistroDeuda.findOne({ where: { id } });
+        const SetDeuda = await Deuda.findOne({ where: { id } });
         
-        if (SetRegistroDeuda) {
-            res.status(200).json(SetRegistroDeuda);
+        if (SetDeuda) {
+            res.status(200).json(SetDeuda);
         } else {
             res.status(404).json({
                 msg: 'descripcion no encontrado',
@@ -33,19 +33,19 @@ export const GetRegistroDeuda = async (req: Request, res: Response) => {
 }
 
 //Guardar Registro
-export const NewRegistroDeuda = async (req: Request, res: Response) => {
-    const{ monto, estado, fecha, id_contrato }= req.body;
+export const NewDeuda = async (req: Request, res: Response) => {
+    const{ monto_deuda, mes, estado, id_contrato }= req.body;
     try {
         // Guardarmos RegistroDeudas en la base de datos
-        await RegistroDeuda.create({
-            monto: monto,
+        await Deuda.create({
+            monto_deuda: monto_deuda,
+            mes: mes,
             estado: estado,
-            fecha: fecha,
             id_contrato: id_contrato
         })
     
         res.json({
-            msg: `RegistroDeuda  ${monto} creado exitosamente!`
+            msg: `Deuda  ${monto_deuda} creado exitosamente!`
         })
     } catch (error) {
         res.status(400).json({
@@ -56,13 +56,13 @@ export const NewRegistroDeuda = async (req: Request, res: Response) => {
 }
 
 //Modificar Registro
-export const UpdateRegistroDeuda = async (req: Request, res: Response) => {
+export const UpdateDeuda = async (req: Request, res: Response) => {
     var { id } = req.params;
-    var{ monto, estado, fecha, id_contrato}= req.body;
+    var{ monto_deuda, mes, estado, id_contrato }= req.body;
 
     try {
            // Buscar el cuartos actual en la base de datos
-           var existingRegistroDeuda = await RegistroDeuda.findOne({ where: { id } });
+           var existingRegistroDeuda = await Deuda.findOne({ where: { id } });
         
            if (!existingRegistroDeuda) {
                return res.status(404).json({
@@ -71,17 +71,17 @@ export const UpdateRegistroDeuda = async (req: Request, res: Response) => {
            }
            
            // Actualizamos el cuartos en la base de datos
-           const [updated] = await RegistroDeuda.update({
-               monto: monto,
+           const [updated] = await Deuda.update({
+               monto_deuda: monto_deuda,
+               mes: mes,
                estado: estado,
-               fecha: fecha,
                id_contrato: id_contrato
            }, { where: { id } });
    
            if (updated) {
-               const updatedProduct = await RegistroDeuda.findOne({ where: { id } });
+               const updatedProduct = await Deuda.findOne({ where: { id } });
                res.status(200).json({
-                   msg: `Registro ${monto} actualizado exitosamente!`,
+                   msg: `Registro ${monto_deuda} actualizado exitosamente!`,
                    product: updatedProduct
                });
            } else {
@@ -99,12 +99,12 @@ export const UpdateRegistroDeuda = async (req: Request, res: Response) => {
 }
 
 //Eliminar Registro
-export const DeleteRegistroDeuda = async (req: Request, res: Response) => {
+export const DeleteDeuda = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
         // Eliminar registrodeuda en la base de datos
-        const deleted = await RegistroDeuda.destroy({
+        const deleted = await Deuda.destroy({
             where: { id }
         });
     
