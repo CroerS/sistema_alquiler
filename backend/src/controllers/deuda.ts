@@ -4,7 +4,6 @@ import { Deuda} from '../models/deuda';
 //listar Registros
 export const getDeudas = async (req: Request, res: Response) => {
     const listDeuda = await Deuda.findAll();
-
     res.json(listDeuda)
 }
 
@@ -34,11 +33,12 @@ export const GetDeuda = async (req: Request, res: Response) => {
 
 //Guardar Registro
 export const NewDeuda = async (req: Request, res: Response) => {
-    const{ monto_deuda, mes, estado, id_contrato }= req.body;
+    const{ monto_deuda, fecha, mes, estado, id_contrato }= req.body;
     try {
         // Guardarmos RegistroDeudas en la base de datos
         await Deuda.create({
             monto_deuda: monto_deuda,
+            fecha:fecha,
             mes: mes,
             estado: estado,
             id_contrato: id_contrato
@@ -58,7 +58,7 @@ export const NewDeuda = async (req: Request, res: Response) => {
 //Modificar Registro
 export const UpdateDeuda = async (req: Request, res: Response) => {
     var { id } = req.params;
-    var{ monto_deuda, mes, estado, id_contrato }= req.body;
+    var{ monto_deuda,fecha, mes, estado, id_contrato }= req.body;
 
     try {
            // Buscar el cuartos actual en la base de datos
@@ -73,6 +73,7 @@ export const UpdateDeuda = async (req: Request, res: Response) => {
            // Actualizamos el cuartos en la base de datos
            const [updated] = await Deuda.update({
                monto_deuda: monto_deuda,
+               fecha:fecha,
                mes: mes,
                estado: estado,
                id_contrato: id_contrato

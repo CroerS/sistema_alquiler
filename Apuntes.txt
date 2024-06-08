@@ -48,3 +48,5 @@ ng g c components/product	----> CREAR COMPONENTE
 
 --instalar jquery
 npm install jquery --save
+--instalar date-fns
+npm install date-fns

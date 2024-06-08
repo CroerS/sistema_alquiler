@@ -12,6 +12,9 @@ export const Deuda = sequelize.define('Deuda', {
     monto_deuda: {
         type: DataTypes.DECIMAL(10, 2)
     },
+    fecha:{
+        type: DataTypes.DATE
+    },
     mes:{
         type: DataTypes.STRING(20)
     },

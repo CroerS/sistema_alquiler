@@ -1,0 +1,57 @@
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Deudas</h1>
+
+   <div class="card ">
+       <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-auto">
+                        <label for="idfctualizacion" class="col-form-label">Hasta la fecha:</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="date"id="idfctualizacion" [(ngModel)]="actualizarAFecha" value="{{ actualizarAFecha}}" class="form-control form-control-sm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="d-flex justify-content-end">
+                    <div class="form-group">
+                        <button type="button" class="agregar btn btn-success btn-sm" (click)="actualizarDeudas()">Actualizar Deudas</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="text-center">
+            <div class="table-responsive">
+             <table class="table table-striped table-hover table-sm  table-bordered">
+               <thead>
+                 <tr class="table-dark">
+                   <th scope="col">Monto</th>
+                   <th scope="col">Fecha</th>
+                   <th scope="col">Mes</th>
+                   <th scope="col">Estado</th>
+                   <th scope="col">Contrato</th>
+                   <!-- <th scope="col">Nombre Inquilino</th> -->
+                   <th width="1%"></th>
+                 </tr>
+               </thead>
+               <tbody>
+                  <tr *ngFor="let item of listaDeuda">
+                    <td>{{ item.monto_deuda}}</td>
+                    <td>{{ item.fecha.split('T')[0]}} </td>
+                    <td>{{ item.mes}} </td>
+                    <td>{{ item.estado ? 'Cancalado' : 'Pendiente' }}</td>
+                    <td>{{ item.id_contrato}} </td>
+                    <!-- <td>{{ item.inquilino?.nombre }} {{ item.inquilino?.apellido }}</td> -->
+                    <td><button (click)="Delete(item.id)" class="btn btn-sm btn-danger"><i  class="fa-solid fa-trash-can"></i></button></td>
+                  </tr>
+               </tbody>
+             </table>
+            </div>
+           </div>
+       </div>
+   </div> 
+</div>

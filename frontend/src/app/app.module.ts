@@ -23,6 +23,7 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { CuartoComponent } from './components/cuarto/cuarto.component';
 import { InquilinoComponent } from './components/inquilino/inquilino.component';
 import { ContratoComponent } from './components/contrato/contrato.component';
+import { DeudaComponent } from './components/deuda/deuda.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ContratoComponent } from './components/contrato/contrato.component';
     SidebarComponent,
     CuartoComponent,
     InquilinoComponent,
-    ContratoComponent
+    ContratoComponent,
+    DeudaComponent
   ],
   imports: [
     BrowserModule,
