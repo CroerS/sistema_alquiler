@@ -17,6 +17,7 @@ export class InquilinoComponent implements OnInit {
 
   nombre: string = '';
   apellido: string = '';
+  telefono: number = 0;
   loading: boolean = false;
 
   //Contructor
@@ -49,7 +50,8 @@ export class InquilinoComponent implements OnInit {
     var inquilino:  any = {
       id: (this.id== undefined)?0:this.id,
       nombre: this.nombre,
-      apellido: this.apellido
+      apellido: this.apellido,
+      telefono: this.telefono
     }
 
     this.loading = true;
@@ -91,7 +93,8 @@ export class InquilinoComponent implements OnInit {
     this.accion = 'Actualizar';
     this.id = inquilino.id;
     this.nombre = inquilino.nombre,
-    this.apellido = inquilino.apellido
+    this.apellido = inquilino.apellido,
+    this.telefono = inquilino.telefono
    }
 
    Delete(id: number){
@@ -112,6 +115,7 @@ export class InquilinoComponent implements OnInit {
    private resetForm() {
     this.nombre = '';
     this.apellido = '';
+    this.telefono = 0;
     this.id = undefined;
   }
 

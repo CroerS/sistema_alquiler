@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../db/connection';
-import { ContratoAlquiler } from './contratoalquiler';
+import { Deuda } from './deuda';
 
 // const Inquilino = require('./Inquilino');
 export const Pago = sequelize.define('Pago', {
@@ -9,16 +9,16 @@ export const Pago = sequelize.define('Pago', {
         primaryKey: true,
         autoIncrement: true
     },
-    monto: {
+    monto_pagado: {
         type: DataTypes.DECIMAL(10, 2)
     },
-    metodopago: {
+    metodo_pago: {
         type: DataTypes.STRING(50)
     },
     fecha: {
         type: DataTypes.DATE
     },
-    id_contrato: {
+    id_deuda: {
         type: DataTypes.INTEGER,
         // references: {
         //   model: ContratoAlquiler,
@@ -33,5 +33,5 @@ export const Pago = sequelize.define('Pago', {
 
 
 // Define the association
-Pago.belongsTo(ContratoAlquiler, { foreignKey: 'id_contrato' });
-ContratoAlquiler.hasMany(Pago, { foreignKey: 'id_contrato' });
+Deuda.hasMany(Pago, { foreignKey: 'id_deuda' });
+Pago.belongsTo(Deuda, { foreignKey: 'id_deuda' });

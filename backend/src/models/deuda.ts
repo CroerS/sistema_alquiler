@@ -35,5 +35,5 @@ export const Deuda = sequelize.define('Deuda', {
 
 
 // Define the association
-Deuda.belongsTo(ContratoAlquiler, { foreignKey: 'id_contrato' });
 ContratoAlquiler.hasMany(Deuda, { foreignKey: 'id_contrato' });
+Deuda.belongsTo(ContratoAlquiler, { foreignKey: 'id_contrato' });

@@ -34,18 +34,18 @@ export const GetPago = async (req: Request, res: Response) => {
 
 //Guardar Registro
 export const NewPago = async (req: Request, res: Response) => {
-    const{ monto, metodopago, fecha, id_contrato }= req.body;
+    const{ monto_pagado, metodo_pago, fecha, id_contrato }= req.body;
     try {
         // Guardarmos cuartos en la base de datos
         await Pago.create({
-            monto: monto,
-            metodopago: metodopago,
+            monto_pagado,
+            metodo_pago: metodo_pago,
             fecha: fecha,
             id_contrato: id_contrato
         })
     
         res.json({
-            msg: `Pago  ${monto} creado exitosamente!`
+            msg: `Pago  ${monto_pagado} creado exitosamente!`
         })
     } catch (error) {
         res.status(400).json({
@@ -58,7 +58,7 @@ export const NewPago = async (req: Request, res: Response) => {
 //Modificar Registro
 export const UpdatePago = async (req: Request, res: Response) => {
     var { id } = req.params;
-    var{ monto, metodopago, fecha, id_contrato }= req.body;
+    var{ monto_pagado, metodo_pago, fecha, id_contrato }= req.body;
 
     try {
            // Buscar el pago actual en la base de datos
@@ -72,8 +72,8 @@ export const UpdatePago = async (req: Request, res: Response) => {
            
            // Actualizamos el pagos en la base de datos
            const [updated] = await Pago.update({
-               monto: monto,
-               metodopago: metodopago,
+               monto_pagado: monto_pagado,
+               metodo_pago: metodo_pago,
                fecha: fecha,
                id_contrato: id_contrato
            }, { where: { id } });
@@ -81,7 +81,7 @@ export const UpdatePago = async (req: Request, res: Response) => {
            if (updated) {
                const updatedProduct = await Pago.findOne({ where: { id } });
                res.status(200).json({
-                   msg: `Registro ${monto} actualizado exitosamente!`,
+                   msg: `Registro ${monto_pagado} actualizado exitosamente!`,
                    product: updatedProduct
                });
            } else {

@@ -34,12 +34,13 @@ export const GetInquilino = async (req: Request, res: Response) => {
 
 //Guardar Registro
 export const NewInquilino = async (req: Request, res: Response) => {
-    const{ nombre, apellido }= req.body;
+    const{ nombre, apellido, telefono }= req.body;
     try {
         // Guardarmos cuartos en la base de datos
         await Inquilino.create({
             nombre: nombre,
-            apellido: apellido
+            apellido: apellido,
+            telefono: telefono
         })
     
         res.json({
@@ -56,7 +57,7 @@ export const NewInquilino = async (req: Request, res: Response) => {
 //Modificar Registro
 export const UpdateInquilino = async (req: Request, res: Response) => {
     var { id } = req.params;
-    var{ nombre, apellido}= req.body;
+    var{ nombre, apellido, telefono}= req.body;
 
     try {
            // Buscar inquilino actual en la base de datos
@@ -71,7 +72,8 @@ export const UpdateInquilino = async (req: Request, res: Response) => {
            // Actualizamos el cuartos en la base de datos
            const [updated] = await Inquilino.update({
                nombre: nombre,
-               apellido: apellido
+               apellido: apellido,
+               telefono: telefono
            }, { where: { id } });
    
            if (updated) {

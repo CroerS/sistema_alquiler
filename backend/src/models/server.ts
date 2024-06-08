@@ -62,8 +62,8 @@ class Server {
             await Inquilino.sync()
             await Cuarto.sync()
             await ContratoAlquiler.sync()
-            await Pago.sync()
             await Deuda.sync()
+            await Pago.sync()
             await NotificacionPago.sync()
             await User.sync()
         } catch (error) {
