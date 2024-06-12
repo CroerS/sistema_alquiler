@@ -20,10 +20,10 @@
                  </tr>
                </thead>
                <tbody>
-                  <tr *ngFor="let date of dates">
-                    <td>{{ date | date: 'fullDate' }}</td>
-                  </tr>
-               </tbody>
+                <tr *ngFor="let date of dates">
+                  <td>{{ formatDate(date) }}</td>
+                </tr>
+              </tbody>
              </table>
             </div>
            </div>
