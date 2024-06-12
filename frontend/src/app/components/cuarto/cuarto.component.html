@@ -37,6 +37,7 @@
                    <th scope="col">Descripción</th>
                    <th scope="col">Dimensión</th>
                    <th scope="col">Costo</th>
+                   <th scope="col">Estado</th>
                    <th width="1%"></th>
                    <th width="1%"></th>
                  </tr>
@@ -47,6 +48,7 @@
                     <td>{{ item.descripcion }} </td>
                     <td>{{ item.dimension }} </td>
                     <td>{{ item.costo }} </td>
+                    <td>{{ item.estado == true ? 'Disponible' : 'Ocupado' }}</td>
                     <td><button (click)="UpdateCuarto(item)" class="btn btn-sm btn-primary"><i  class="fa-solid fa-pen-to-square"></i></button></td>
                     <td><button (click)="DeleteCuarto(item.id)" class="btn btn-sm btn-danger"><i  class="fa-solid fa-trash-can"></i></button></td>
                   </tr>

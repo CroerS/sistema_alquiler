@@ -18,6 +18,12 @@ export const Pago = sequelize.define('Pago', {
     fecha: {
         type: DataTypes.DATE
     },
+    adelanto: {
+        type: DataTypes.DECIMAL(10,2)
+    },
+    mes: {
+        type: DataTypes.INTEGER
+    },
     id_deuda: {
         type: DataTypes.INTEGER,
         // references: {

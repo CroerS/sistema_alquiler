@@ -125,3 +125,40 @@ export const DeleteCuarto = async (req: Request, res: Response) => {
         })
     }
 }
+
+//actualizar estado de cuarto
+export const actualizarEstado = async (req: Request, res: Response) => {
+    var { id } = req.params;
+    var{estado}= req.body;
+    try {
+           // Buscar el cuartos actual en la base de datos
+           var existingCuarto = await Cuarto.findOne({ where: { id } });
+        
+           if (!existingCuarto) {
+               return res.status(404).json({
+                   msg: 'Registro no encontrado',
+               });
+           }   
+           // Actualizamos el cuartos en la base de datos
+           const [updated] = await Cuarto.update({
+               estado: estado
+           }, { where: { id } });
+   
+           if (updated) {
+               const updatedProduct = await Cuarto.findOne({ where: { id } });
+               res.status(200).json({
+                   msg: `Registro actualizado exitosamente!`,
+                   product: updatedProduct
+               });
+           } else {
+               res.status(200).json({
+                msg: 'No hay cambios para actualizar',
+               });
+           }
+    } catch (error) {
+        res.status(400).json({
+            msg: 'Upps ocurrio un error',
+            error
+        })
+    }
+}

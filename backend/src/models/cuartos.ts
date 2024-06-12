@@ -18,7 +18,12 @@ export const Cuarto = sequelize.define('cuarto', {
     },
     costo: {
         type: DataTypes.DECIMAL(10,2)
+    },
+    estado: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     }
+
     // Otros campos relevantes como tamaño, comodidades, etc.
 },
 {

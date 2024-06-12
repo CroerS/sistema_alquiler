@@ -4,4 +4,5 @@ export interface Cuarto {
     descripcion: string,
     dimension: string,
     costo: number,
+    estado: boolean
 }
