@@ -48,5 +48,12 @@ ng g c components/product	----> CREAR COMPONENTE
 
 --instalar jquery
 npm install jquery --save
+
 --instalar date-fns
 npm install date-fns
+
+--instalar PDFKIT (fuente: https://pdfkit.org/  y https://www.npmjs.com/package/pdfkit-table)
+npm install pdfkit
+npm install pdfkit-table
+
+ video tutorial: https://youtu.be/vVAlzmF8tfw?si=X0RC54M0d0RI5KdG

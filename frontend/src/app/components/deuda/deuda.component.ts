@@ -150,5 +150,27 @@ export class DeudaComponent implements OnInit {
   }
 
 
+  VerPDF(id:number):void{
+    this._deudaService.VerPdf(id).subscribe({
+      next: (data: Blob) => {
+        const blob = new Blob([data], { type: 'application/pdf' });
+        // Crear un objeto URL para el blob y abrirlo en una nueva ventana/tab
+        const url = window.URL.createObjectURL(blob);
+        // window.open(url);
 
+        // Alternativamente, puedes descargar el PDF automáticamente
+        const a = document.createElement('a');
+         a.href = url;
+         a.download = 'deuda.pdf';
+         document.body.appendChild(a);
+         a.click();
+         document.body.removeChild(a);
+         this.loading = false;
+      },
+      error: (e: HttpErrorResponse) => {
+        this.loading = false;
+        this._errorService.msjError(e);
+      }
+    })
+  }
 }

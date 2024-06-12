@@ -33,4 +33,10 @@ export class DeudaService {
     return this.http.delete(this.myAppUrl + this.myApiUrl +'/'+ id)
   }
 
+  VerPdf(id: number): Observable<any>{
+    return this.http.get(`${this.myAppUrl}${this.myApiUrl}pdf/${id}`, {
+      responseType: 'blob' as 'json' // Indicar que esperamos un blob (archivo binario)
+    });
+  }
+  
 }

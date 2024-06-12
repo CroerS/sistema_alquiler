@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Deuda} from '../models/deuda';
+import { appService } from '../servicios/app.service';
 
 //listar Registros
 export const getDeudas = async (req: Request, res: Response) => {
@@ -122,6 +123,28 @@ export const DeleteDeuda = async (req: Request, res: Response) => {
     } catch (error) {
         res.status(400).json({
             msg: 'Upps, ocurrió un error',
+            error
+        })
+    }
+}
+
+export var OptenerPDF = async (req: Request, res: Response):Promise<void> => {
+    var { id } = req.params;
+    try {
+        //aqui ocupar el servicio de para generar pdf
+       var buffer = await appService.generatePDF();
+       
+       res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename=example.pdf',
+        'Content-Length': buffer.length,
+      })
+      res.send(buffer);
+      //res.end(buffer);
+
+    } catch (error) {
+        res.status(400).json({
+            msg: 'Upps ocurrio un error',
             error
         })
     }
