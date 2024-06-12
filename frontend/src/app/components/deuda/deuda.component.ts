@@ -17,8 +17,8 @@ export class DeudaComponent implements OnInit {
 
   @ViewChild('myModal') myModal!: ElementRef;
 
-  listaDeuda: Deuda[] = []
-  listaContrato: Contrato[] = []
+  listaDeuda: Deuda[] = [];
+  listaContrato: Contrato[]| undefined = [];
 
   accion = 'Agregar';
   loading: boolean = false;
@@ -44,73 +44,63 @@ export class DeudaComponent implements OnInit {
 
   //funcion que se ejecuta al entrar al programa
   ngOnInit(): void {
-    this.getListaDuedas();
+    this.getListaDeudas();
     const today = new Date();
-    today.setDate(today.getDate() - 1);
+    today.setDate(today.getDate());
     this.actualizarAFecha = today.toISOString().split('T')[0]; // formatea a 'yyyy-MM-dd'
   }
 
-  getListaDuedas() {
+  async actualizarDeudas() {
+    try {
+      this.listaContrato= await this._contratoService.getList().toPromise(); // Obtener la lista de contratos de manera síncrona
+      
+      // Iterar sobre cada contrato y registrar las deudas mensuales
+      for (var contrato of this.listaContrato!) {
+        await this.registrarDeudasMensuales(contrato); // Esperar a que se registren todas las deudas del contrato
+      }
+  
+      // Después de completar el registro de deudas, obtener la lista de deudas
+      this.getListaDeudas();
+    } catch (error) {
+      console.error('Error al obtener la lista de contratos:', error);
+    }
+  }
+  
+  getListaDeudas(): void {
     this._deudaService.getList().subscribe(data => {
       this.listaDeuda = data;
-    })
-  }
-
-  getListaContrato() {
-    this._contratoService.getList().subscribe(data => {
-      this.listaContrato = data;
-    })
-  }
-
-  Delete(id: number){
-    this.loading = true;
-    this._deudaService.delete(id).subscribe({
-      next: (v) => {
-        this.toastr.success(`El Deuda con ID ${this.id} fue elimado con exito`, 'Deuda Eliminado');
-        this.getListaDuedas();
-      },
-      error: (e: HttpErrorResponse) => {
-        this.loading = false;
-        this._errorService.msjError(e);
-      }
-    })
-  }
-
-
-  actualizarDeudas() {
-    this._contratoService.getList().subscribe(data => {
-      data.forEach(item => {
-        this.registrarDeudasMensuales(item);
-      });
-      this.getListaDuedas();
+      console.log('Lista de deudas:', this.listaDeuda);
     });
   }
-
-  registrarDeudasMensuales(contrato: Contrato) {
-    let fechaInicio = new Date(contrato.fecha_inicio);
-    fechaInicio.setDate(fechaInicio.getDate() + 1);
-    alert(fechaInicio)
-    let fechaFin = new Date(contrato.fecha_fin);
-    var fechasDeCobro = this.calcularFechasDeCobro(fechaInicio, fechaFin);
-    console.log(fechasDeCobro);
-    fechasDeCobro.forEach(fecha => {
-      if (fecha <= new Date(this.actualizarAFecha) ) {
-        let mes = fecha.getMonth() + 1; // Mes en base 1
-        var deuda:  Deuda = {
-          id: 0, // El id será generado por la base de datos
-          monto_deuda: this.calcularMontoDeuda(contrato),
-          mes: mes,
-          fecha: fecha.toDateString(),
-          estado: false, // Asumiendo que la deuda es pendiente
-          id_contrato: contrato.id
-        };
-        this._deudaService.save(deuda).subscribe(response => {
-          console.log('Deuda registrada:', response);
-        });
+  
+  async registrarDeudasMensuales(contrato: Contrato) {
+    try {
+      let fechaInicio = new Date(contrato.fecha_inicio);
+      fechaInicio.setDate(fechaInicio.getDate() + 1); // Ajustar inicio al día siguiente para evitar duplicados
+      let fechaFin = new Date(contrato.fecha_fin);
+      const fechasDeCobro = await this.calcularFechasDeCobro(fechaInicio, fechaFin);
+  
+      for (const fecha of fechasDeCobro) {
+        if (fecha <= new Date(this.actualizarAFecha)) {
+          let mes = fecha.getMonth() + 1; // Mes en base 1
+          let deuda: Deuda = {
+            id: 0, // El id será generado por la base de datos
+            monto_deuda: this.calcularMontoDeuda(contrato),
+            mes: mes,
+            fecha: fecha.toDateString(),
+            estado: false, // Asumiendo que la deuda es pendiente
+            id_contrato: contrato.id
+          };
+  
+          await this._deudaService.save(deuda).toPromise(); // Esperar a que se guarde la deuda
+          console.log('Deuda registrada:', deuda);
+        }
       }
-    });
-
+    } catch (error) {
+      console.error('Error al registrar las deudas mensuales:', error);
+    }
   }
+
 
   calcularMontoDeuda(contrato: Contrato): number {
     if (contrato.cuarto && contrato.cuarto.costo) {
@@ -119,7 +109,7 @@ export class DeudaComponent implements OnInit {
       return 0; // Manejo del caso en que no haya información del cuarto
     }
   }
-  calcularFechasDeCobro(fechaInicio: Date, fechaFin: Date): Date[] {
+   calcularFechasDeCobro(fechaInicio: Date, fechaFin: Date): Date[] {
     let fechasDeCobro: Date[] = [];
     let fecha = new Date(fechaInicio);
     
@@ -143,5 +133,22 @@ export class DeudaComponent implements OnInit {
     }
     return fechasDeCobro;
   }
+
+
+  Delete(id: number){
+    this.loading = true;
+    this._deudaService.delete(id).subscribe({
+      next: (v) => {
+        this.toastr.success(`El Deuda con ID ${this.id} fue elimado con exito`, 'Deuda Eliminado');
+        this.getListaDeudas();
+      },
+      error: (e: HttpErrorResponse) => {
+        this.loading = false;
+        this._errorService.msjError(e);
+      }
+    })
+  }
+
+
 
 }
