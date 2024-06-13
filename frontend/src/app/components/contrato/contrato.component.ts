@@ -141,11 +141,22 @@ export class ContratoComponent implements OnInit {
     this.openModal();
    }
 
-   Delete(id: number){
+   Delete(item: any){
     this.loading = true;
-    this._contratoService.delete(id).subscribe({
+    
+    this._contratoService.delete(item.id).subscribe({
       next: (v) => {
-        this.toastr.success(`El Contrato con ID ${this.id} fue elimado con exito`, 'Contrato Eliminado');
+        this.toastr.success(`El Contrato con ID ${item.id} fue elimado con exito`, 'Contrato Eliminado');
+        var contrato: any = { estado: true }
+          this._cuartoService.updateEstado(item.id_cuarto, contrato).subscribe({
+            next: (res) => {
+              this.toastr.success('El estado del cuarto se actualizó correctamente', 'Estado Actualizado');
+            },
+            error: (e: HttpErrorResponse) => {
+              this.toastr.error('Hubo un error al actualizar el estado del cuarto', 'Error');
+              this.loading = false;
+            }
+          });
         this.getLista();
       },
       error: (e: HttpErrorResponse) => {

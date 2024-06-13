@@ -31,5 +31,9 @@ export class CuartoService {
   deleteCuarto(id: number): Observable<any>{
     return this.http.delete(this.myAppUrl + this.myApiUrl +'/'+ id)
   }
+
+  updateEstado(id:number, cuarto:any): Observable<any>{
+    return this.http.put(this.myAppUrl + this.myApiUrl +'estado/'+ id, cuarto); 
+  }
 }
 

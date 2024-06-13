@@ -41,13 +41,18 @@ export const GetContratoAlquiler = async (req: Request, res: Response) => {
 export const NewContratoAlquiler = async (req: Request, res: Response) => {
     const{ fecha_inicio, fecha_fin, id_inquilino, id_cuarto }= req.body;
     try {
+        const id = id_cuarto;
         // Guardarmos cuartos en la base de datos
-        await ContratoAlquiler.create({
+        const creado =  await ContratoAlquiler.create({
             fecha_inicio: fecha_inicio,
             fecha_fin: fecha_fin,
             id_inquilino: id_inquilino,
             id_cuarto: id_cuarto,
         })
+        if(creado){
+             // Actualizamos el estado del cuarto
+            await Cuarto.update({ estado: false}, { where: { id } });
+        }
     
         res.json({
             msg: `Contrato de Alquiler creado exitosamente!`
@@ -68,7 +73,7 @@ export const UpdateContratoAlquiler = async (req: Request, res: Response) => {
     try {
            // Buscar el cuartos actual en la base de datos
            var existingContratoAlquiler = await ContratoAlquiler.findOne({ where: { id } });
-        
+
            if (!existingContratoAlquiler) {
                return res.status(404).json({
                    msg: 'Registro no encontrado',
@@ -84,7 +89,9 @@ export const UpdateContratoAlquiler = async (req: Request, res: Response) => {
            }, { where: { id } });
    
            if (updated) {
-               const obtejo= await ContratoAlquiler.findOne({ where: { id } });
+                const obtejo= await ContratoAlquiler.findOne({ where: { id } });
+                // Actualizamos el estado del cuarto
+
                res.status(200).json({
                    msg: `Registro ${fecha_inicio} actualizado exitosamente!`,
                    contrato: obtejo
@@ -107,7 +114,6 @@ export const UpdateContratoAlquiler = async (req: Request, res: Response) => {
 export const DeleteContratoAlquiler = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-        // Eliminar cuartos en la base de datos
         const deleted = await ContratoAlquiler.destroy({
             where: { id }
         });
