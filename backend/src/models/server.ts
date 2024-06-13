@@ -1,6 +1,5 @@
 import express, { Application } from 'express';
 import cors from 'cors';
-import routesProduct from '../routes/product';
 import routesUser from '../routes/user';
 import routesCuarto from '../routes/cuartos';
 import routesInquilino from '../routes/inquilino';
@@ -8,7 +7,6 @@ import routesContrato from '../routes/contrato';
 import routesPago from '../routes/pago';
 import routesRegistroDeuda from '../routes/deuda';
 import routesNotificacionPago from '../routes/notificacionpago';
-import { Product } from './product';
 import { User } from './user';
 import { Cuarto } from './cuartos';
 import { ContratoAlquiler } from './contratoalquiler';
@@ -38,7 +36,6 @@ class Server {
     }
 
     routes() {
-        this.app.use('/api/products', routesProduct);
         this.app.use('/api/users', routesUser);
         this.app.use('/api/cuartos', routesCuarto);
         this.app.use('/api/inquilinos', routesInquilino);
@@ -58,7 +55,6 @@ class Server {
 
     async dbConnect() {
         try {
-            await Product.sync()
             await Inquilino.sync()
             await Cuarto.sync()
             await ContratoAlquiler.sync()
