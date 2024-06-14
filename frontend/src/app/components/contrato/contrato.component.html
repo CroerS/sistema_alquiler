@@ -18,6 +18,8 @@
                  <tr class="table-dark">
                    <th scope="col">Fecha Inicio</th>
                    <th scope="col">Fecha Finalizacion</th>
+                   <th scope="col">Estado</th>
+                   <th scope="col">Pago Adelantado</th>
                    <th scope="col">Nro. Cuarto</th>
                    <th scope="col">Nombre Inquilino</th>
                    <th width="1%"></th>
@@ -28,6 +30,8 @@
                   <tr *ngFor="let item of lista">
                     <td>{{ item.fecha_inicio.split('T')[0]}}</td>
                     <td>{{ item.fecha_fin.split('T')[0]}} </td>
+                    <td>{{ item.estado == true ? 'Vigente' : 'Finalizado' }}</td>
+                    <td>{{ item.pagoadelanto }} </td>
                     <td>{{ item.cuarto?.numero }} </td>
                     <td>{{ item.inquilino?.nombre }} {{ item.inquilino?.apellido }}</td>
                     <td><button (click)="Update(item)" class="btn btn-sm btn-primary"><i  class="fa-solid fa-pen-to-square"></i></button></td>
@@ -60,6 +64,10 @@
                     <label for="fecha_fin" class="col-form-label">Fecha Finalizacion</label>
                     <input type="date" [(ngModel)]="fecha_fin" value="{{ fecha_fin | date: 'yyyy-MM-dd' }}" class="form-control" id="fecha_fin">
                   </div>
+                  <!-- <div class="col col-md-6 col-sm-6">
+                    <label for="fecha_fin" class="col-form-label">Estado</label>
+                    <input type="date" [(ngModel)]="estado" value="{{ estado | date: 'yyyy-MM-dd' }}" class="form-control" id="fecha_fin">
+                  </div> -->
                 </div>
                 <div class="row">
                   <div class="col">
@@ -79,7 +87,12 @@
                     </select>
                   </div>
                 </div>
-
+                <div class="row">
+                  <div class="col">
+                    <label for="pagoadelanto" class="col-form-label">Anticipo</label>
+                    <input type="number" [(ngModel)]="pagoadelanto"  class="form-control" id="pagoadelanto" >
+                  </div>
+                </div>
                 </div>
           </div>
           <div class="modal-footer">

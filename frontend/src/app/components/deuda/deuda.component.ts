@@ -103,36 +103,38 @@ export class DeudaComponent implements OnInit {
 
 
   calcularMontoDeuda(contrato: Contrato): number {
+   
     if (contrato.cuarto && contrato.cuarto.costo) {
       return contrato.cuarto.costo;
     } else {
       return 0; // Manejo del caso en que no haya información del cuarto
     }
   }
-   calcularFechasDeCobro(fechaInicio: Date, fechaFin: Date): Date[] {
-    let fechasDeCobro: Date[] = [];
-    let fecha = new Date(fechaInicio);
-    
-    while (fecha <= fechaFin) {
-        // Ajusta la fecha al último día del mes si el día actual es mayor que el último día del mes
-        let ultimoDiaDelMes = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0).getDate();
-        let diaCobro = Math.min(fechaInicio.getDate(), ultimoDiaDelMes);
-        fecha.setDate(diaCobro);
 
-        fechasDeCobro.push(new Date(fecha));
-        // Avanza al próximo mes
-        fecha.setMonth(fecha.getMonth() + 1);
-        console.log(fecha)
-        // Ajustar al último día del mes nuevamente si es necesario
-        let nuevoUltimoDiaDelMes = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0).getDate();
-        if (fechaInicio.getDate() > nuevoUltimoDiaDelMes) {
-            fecha.setDate(nuevoUltimoDiaDelMes);
-        } else {
-            fecha.setDate(fechaInicio.getDate()); // Restablecer el día del mes al original si es posible
+  calcularFechasDeCobro(fechaInicio: Date, fechaFin: Date): Date[] {
+    // Reiniciar el arreglo de fechas
+    let fechasDeCobro: Date[] = [];
+
+    // Crear una copia de la fecha de inicio para no modificar la original
+    let fechaActual = new Date(fechaInicio);
+
+    // Iterar hasta que la fecha actual llegue al mes de la fecha de fin
+    while (fechaActual <= fechaFin) {
+        // Agregar la fecha actual al arreglo
+        fechasDeCobro.push(new Date(fechaActual));
+
+        // Avanzar al siguiente mes
+        fechaActual.setMonth(fechaActual.getMonth() + 1);
+
+        // Si estamos en el mes de fin y la fecha actual supera la fecha de fin, salimos del bucle
+        if (fechaActual.getMonth() === fechaFin.getMonth() && fechaActual > fechaFin) {
+            break;
         }
     }
+
     return fechasDeCobro;
-  }
+}
+  
 
 
   Delete(id: number){

@@ -27,6 +27,8 @@ export class ContratoComponent implements OnInit {
 
   fecha_inicio: string = '';
   fecha_fin: string = '';
+  estado: boolean= true;
+  pagoadelanto: number=0;
   id_inquilino:number = 0;
   id_cuarto: number= 0;
 
@@ -78,7 +80,7 @@ export class ContratoComponent implements OnInit {
 
   Add(){
     // Validamos que el Contrato ingrese valores
-    if (this.fecha_fin == null || this.fecha_fin == null || 
+    if (this.fecha_fin == null || this.fecha_fin == null || this.pagoadelanto == null || 
         this.id_inquilino == 0 || this.id_cuarto == 0
     ) {
       this.toastr.error('Todos los campos son obligatorios', 'Error');
@@ -90,6 +92,8 @@ export class ContratoComponent implements OnInit {
       id: (this.id== undefined)?0:this.id,
       fecha_inicio: this.fecha_inicio,
       fecha_fin: this.fecha_fin,
+      estado: this.estado,
+      pagoadelanto: this.pagoadelanto,
       id_cuarto: this.id_cuarto,
       id_inquilino: this.id_inquilino
     }
@@ -136,6 +140,8 @@ export class ContratoComponent implements OnInit {
     this.id = contrato.id;
     this.fecha_inicio = contrato.fecha_inicio.split('T')[0],
     this.fecha_fin = contrato.fecha_fin.split('T')[0],
+    this.estado = contrato.estado,
+    this.pagoadelanto = contrato.pagoadelanto,
     this.id_cuarto = contrato.id_cuarto,
     this.id_inquilino = contrato.id_inquilino
     this.openModal();

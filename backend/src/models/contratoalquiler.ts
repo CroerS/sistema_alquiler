@@ -16,6 +16,12 @@ export const ContratoAlquiler = sequelize.define('ContratoAlquiler', {
     fecha_fin: {
         type: DataTypes.DATE
     },
+    estado: {
+        type: DataTypes.BOOLEAN
+    },
+    pagoadelanto: {
+        type: DataTypes.DECIMAL(10,2)
+    },
     id_inquilino: {
         type: DataTypes.INTEGER,
         // references: {
@@ -37,6 +43,7 @@ export const ContratoAlquiler = sequelize.define('ContratoAlquiler', {
     timestamps: false,
 }
 );
+
 
 
 // Define the association
