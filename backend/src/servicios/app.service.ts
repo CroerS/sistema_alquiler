@@ -49,15 +49,13 @@ export class AppService {
             });
             doc.moveDown();
       
-      
             doc.addPage();
             doc.text('', 50, 70);
             doc.font("Helvetica-Bold").fontSize(20);
             doc.text("PDF Generado en nuestro servidor");
             doc.moveDown();
             doc.font("Helvetica").fontSize(16);
-            doc.text("Esto es un ejemplo de como generar un pdf en nuestro servidor nestjs");
-      
+            doc.text("Esto es un ejemplo de como generar un pdf en nuestro servidor nestjs");     
       
             doc.addPage();
             doc.text('', 50, 70)
@@ -117,9 +115,6 @@ export class AppService {
             },
             });
             
-         
-            
-
             //finalizacion del document
             const buffer: Uint8Array[] = []; // Declarar explícitamente el tipo
             doc.on('data', buffer.push.bind(buffer))
@@ -132,6 +127,8 @@ export class AppService {
         })
         return pdfBuffer;
     }
+
+
 
 // inicio de pdf
     async PDFcontrato(): Promise<Buffer> {
@@ -229,25 +226,9 @@ export class AppService {
 
           const width = doc.page.width;
 
-          // Coordenadas Y para cada texto
-          const leftY = 50; // Alineado a la izquierda
-          const rightY = width - 150; // Alineado a la derecha
-          // Coordenada Y para ambos textos (asumimos una posición vertical)
-          const z = 640; // Por ejemplo, puedes ajustar según sea necesario
-          // Texto "Arrendador" a la izquierda
-          doc.text('------------------', leftY, z, { align: 'left' });
-          // Texto "Arrendatario" a la derecha
-          doc.text('------------------', rightY, z, { align: 'right' });
-
-          // Coordenadas X para cada texto
-          const leftX = 50; // Alineado a la izquierda
-          const rightX = width - 150; // Alineado a la derecha
-          // Coordenada Y para ambos textos (asumimos una posición vertical)
-          const y = 650; // Por ejemplo, puedes ajustar según sea necesario
-          // Texto "Arrendador" a la izquierda
-          doc.text('Arrendador', leftX, y, { align: 'left' });
-          // Texto "Arrendatario" a la derecha
-          doc.text('Arrendatario', rightX, y, { align: 'right' });
+          doc.moveDown(2);
+          doc.text('_________________________               _________________________', { align: 'center' });
+          doc.text('Arrendador                                             Arrendatario', { align: 'center' });
   
           // Finalización del documento
           const buffer: Uint8Array[] = []; // Declarar explícitamente el tipo
@@ -262,54 +243,68 @@ export class AppService {
       return pdfBuffer;
   }
 
-  // INICIO DE PAGO PDF
-    async ExtractoPagoPDF():Promise<Buffer>{
-      const pdfBuffer:Buffer = await new Promise(resolve =>{
-          //Creacion del document
-          const doc= new PDFDocument({
-              size:"LETTER",
-              bufferPages:true,
-              autoFirstPage: false,//para que no cree automaticamente una pagina
-          })
 
-          //Aqui el contenido del pdf
-          let pageNumber = 0;
-          doc.on('pageAdded', () => {
-            pageNumber++
-            let bottom = doc.page.margins.bottom;
-    
-            if (pageNumber > 0) {
-              doc.image(join(process.cwd(), "assets/img/logo.png"), doc.page.width - 100, 18, { fit: [55, 55], align: 'center' })
-              doc.moveTo(50, 55)
-                .lineTo(doc.page.width - 50, 55)
-                .stroke();
-            }
-    
-          })
+// INICIO DE PAGO PDF
+async ExtractoPagoPDF(): Promise<Buffer> {
+    const pdfBuffer: Buffer = await new Promise((resolve, reject) => {
+      
+        // Crear documento PDF
+        const doc = new PDFDocument({
+            size: "LETTER",
+            bufferPages: true,
+            autoFirstPage: false,
+        });
 
-    
-          doc.addPage();
-          doc.text('', 50, 70);
-          doc.font("Helvetica-Bold").fontSize(20);
-          doc.text("PDF Generado en nuestro servidor");
-          doc.moveDown();
-          doc.font("Helvetica").fontSize(16);
-          doc.text("Esto es un ejemplo de como generar un pdf en nuestro servidor nestjs");
-    
-    
-          //finalizacion del document
-          const buffer: Uint8Array[] = []; // Declarar explícitamente el tipo
-          doc.on('data', buffer.push.bind(buffer))
-          doc.on('end', () => {
-              const data = Buffer.concat(buffer)
-              resolve(data)
-          })
+        // Stream para escribir en un archivo PDF (opcional)
+        const stream = fs.createWriteStream('recibo_pago.pdf');
 
-          doc.end()
-      })
-      return pdfBuffer;
-  }
-  // FIN DE PAGO PDF
+        // Manejar errores
+        doc.on('error', (error: any) => {
+            reject(error);
+        });
+
+        // Escribir contenido del recibo de pago
+        doc.addPage();
+        doc.image(join(process.cwd(), "assets/img/logo.png"), doc.page.width - 100, 18, { fit: [55, 55], align: 'center' })
+                  doc.moveTo(50, 55)
+                      .lineTo(doc.page.width - 50, 55)
+                      .stroke();
+        doc.text('RECIBO DE PAGO', { align: 'center' });
+        doc.moveDown();
+        doc.font("Helvetica").fontSize(12);
+        doc.font('Times-BoldItalic').fontSize(12).text('Fecha: ' + new Date().toLocaleDateString());
+        doc.font("Helvetica").fontSize(12);
+        doc.moveDown();
+        doc.text('Numero de recibo: id_pago')
+        doc.text('Inquilino: "nombre. + apellido de Inquilino"');
+        doc.text('Cuarto Número: "número.Cuarto"');
+        doc.text('Periodo Cubierto: [Mes y Año]');
+        doc.text('Monto del Alquiler: Bs "costo.Cuarto"');
+        doc.text('Método de Pago: "método_pago.Pago"');
+        doc.moveDown(2);
+        doc.text('_________________________               _________________________', { align: 'center' });
+        doc.text('Arrendador                                             Arrendatario', { align: 'center' });
+
+        // Finalizar documento y resolver promesa con el buffer
+        const buffers: Uint8Array[] = [];
+        doc.on('data', (chunk: Uint8Array) => buffers.push(chunk));
+        doc.on('end', () => {
+            const buffer = Buffer.concat(buffers);
+            resolve(buffer);
+        });
+
+        // Pipe para escribir en el stream (opcional)
+        if (stream) {
+            doc.pipe(stream);
+            doc.end();
+        } else {
+            doc.end();
+        }
+    });
+
+    return pdfBuffer;
+}
+// FIN DE PAGO PDF
 
 }
 
