@@ -19,6 +19,10 @@ export const ContratoAlquiler = sequelize.define('ContratoAlquiler', {
     estado: {
         type: DataTypes.BOOLEAN
     },
+    mesesadelanto: {
+        type: DataTypes.INTEGER,
+        defaultValue:0
+    },
     pagoadelanto: {
         type: DataTypes.DECIMAL(10,2)
     },

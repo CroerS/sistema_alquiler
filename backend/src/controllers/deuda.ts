@@ -4,7 +4,7 @@ import { appService } from '../servicios/app.service';
 
 //listar Registros
 export const getDeudas = async (req: Request, res: Response) => {
-    const listDeuda = await Deuda.findAll();
+    const listDeuda = await Deuda.findAll({  order: [['id_contrato', 'ASC'],['fecha', 'ASC']]});
     res.json(listDeuda)
 }
 
@@ -127,7 +127,40 @@ export const DeleteDeuda = async (req: Request, res: Response) => {
         })
     }
 }
-
+//actualizar estado de cuarto
+export const actualizarEstado = async (req: Request, res: Response) => {
+    var { id } = req.params;
+    var{estado}= req.body;
+    try {
+           // Buscar el cuartos actual en la base de datos
+           var existing = await Deuda.findOne({ where: { id } });
+        
+           if (!existing) {
+               return res.status(404).json({
+                   msg: 'Registro no encontrado',
+               });
+           }
+           // Actualizamos el cuartos en la base de datos
+           const [updated] = await Deuda.update({
+               estado: estado
+           }, { where: { id } });
+   
+           if (updated) {
+               res.status(200).json({
+                   msg: `Registro actualizado exitosamente!`,
+               });
+           } else {
+               res.status(200).json({
+                msg: 'No hay cambios para actualizar',
+               });
+           }
+    } catch (error) {
+        res.status(400).json({
+            msg: 'Upps ocurrio un error',
+            error
+        })
+    }
+}
 export var OptenerPDF = async (req: Request, res: Response):Promise<void> => {
     var { id } = req.params;
     try {

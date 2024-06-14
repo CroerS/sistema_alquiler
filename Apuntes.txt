@@ -57,3 +57,6 @@ npm install pdfkit
 npm install pdfkit-table
 
  video tutorial: https://youtu.be/vVAlzmF8tfw?si=X0RC54M0d0RI5KdG
+
+--fomato de fechas
+ https://www.delftstack.com/es/howto/angular/angular-date-format/

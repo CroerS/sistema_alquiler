@@ -38,5 +38,8 @@ export class DeudaService {
       responseType: 'blob' as 'json' // Indicar que esperamos un blob (archivo binario)
     });
   }
+  updateEstado(id:number, dueda:any): Observable<any>{
+    return this.http.put(this.myAppUrl + this.myApiUrl +'estado/'+ id, dueda); 
+  }
   
 }

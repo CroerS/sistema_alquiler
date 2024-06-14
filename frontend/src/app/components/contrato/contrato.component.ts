@@ -29,9 +29,13 @@ export class ContratoComponent implements OnInit {
   fecha_inicio: string = '';
   fecha_fin: string = '';
   estado: boolean= true;
+  mesesadelanto: number=0;
   pagoadelanto: number=0;
   id_inquilino:number = 0;
   id_cuarto: number= 0;
+
+  //adicionales
+  costoMensualCuarto :number = 0;
 
   constructor(
     private _contratoService: ContratoService,
@@ -102,6 +106,20 @@ export class ContratoComponent implements OnInit {
     this.openModal();
   }
 
+  onSelectChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    this.id_cuarto = parseInt(selectElement.value);
+    let costo = this.listCuarto.find(x=>x.id==this.id_cuarto)?.costo
+    this.costoMensualCuarto = costo!;
+  }
+  //Calcular monto de anticipo
+  CalculaMontAntipo(){
+    this.pagoadelanto = this.costoMensualCuarto*this.mesesadelanto;
+  }
+  onInputChange(event: any): void {
+    this.CalculaMontAntipo()
+  }
+
   Add(){
     // Validamos que el Contrato ingrese valores
     if (this.fecha_fin == null || this.fecha_fin == null || this.pagoadelanto == null || 
@@ -124,6 +142,7 @@ export class ContratoComponent implements OnInit {
       fecha_inicio: this.fecha_inicio,
       fecha_fin: this.fecha_fin,
       estado: this.estado,
+      mesesadelanto: this.mesesadelanto,
       pagoadelanto: this.pagoadelanto,
       id_cuarto: this.id_cuarto,
       id_inquilino: this.id_inquilino
@@ -167,14 +186,18 @@ export class ContratoComponent implements OnInit {
   }
 
   Update(contrato: Contrato){
-    this.accion = 'Actualizar';
-    this.id = contrato.id;
+    this.accion = 'Actualizar',
+    this.id = contrato.id,
     this.fecha_inicio = contrato.fecha_inicio.split('T')[0],
     this.fecha_fin = contrato.fecha_fin.split('T')[0],
     this.estado = contrato.estado,
     this.pagoadelanto = contrato.pagoadelanto,
     this.id_cuarto = contrato.id_cuarto,
     this.id_inquilino = contrato.id_inquilino
+    //variables adicionales
+    this.costoMensualCuarto = contrato.cuarto?.costo!,
+    this.mesesadelanto = contrato.mesesadelanto,
+    this.pagoadelanto = contrato.pagoadelanto
     this.openModal();
    }
 
@@ -238,6 +261,9 @@ export class ContratoComponent implements OnInit {
     this.id = undefined;
     this.id_cuarto = 0;
     this.id_inquilino = 0;
+    this.costoMensualCuarto = 0;
+    this.mesesadelanto = 0;
+    this.pagoadelanto = 0;
     this.CargarFechas();
   }
 

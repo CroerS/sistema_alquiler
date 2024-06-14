@@ -40,7 +40,7 @@ export const GetContratoAlquiler = async (req: Request, res: Response) => {
 
 //Guardar Registro
 export const NewContratoAlquiler = async (req: Request, res: Response) => {
-    const{ fecha_inicio, fecha_fin, estado, pagoadelanto, id_inquilino, id_cuarto }= req.body;
+    const{ fecha_inicio, fecha_fin, estado,mesesadelanto, pagoadelanto, id_inquilino, id_cuarto }= req.body;
     try {
         const id = id_cuarto;
         // Guardarmos cuartos en la base de datos
@@ -48,6 +48,7 @@ export const NewContratoAlquiler = async (req: Request, res: Response) => {
             fecha_inicio: fecha_inicio,
             fecha_fin: fecha_fin,
             estado: estado,
+            mesesadelanto: mesesadelanto,
             pagoadelanto: pagoadelanto,
             id_inquilino: id_inquilino,
             id_cuarto: id_cuarto,
@@ -71,7 +72,7 @@ export const NewContratoAlquiler = async (req: Request, res: Response) => {
 //Modificar Registro
 export const UpdateContratoAlquiler = async (req: Request, res: Response) => {
     var { id } = req.params;
-    var{ fecha_inicio, fecha_fin,estado, pagoadelanto, id_inquilino, id_cuarto}= req.body;
+    var{ fecha_inicio, fecha_fin,estado,mesesadelanto, pagoadelanto, id_inquilino, id_cuarto}= req.body;
 
     try {
            // Buscar el cuartos actual en la base de datos
@@ -88,6 +89,7 @@ export const UpdateContratoAlquiler = async (req: Request, res: Response) => {
                fecha_inicio: fecha_inicio,
                fecha_fin: fecha_fin,
                estado: estado,
+               mesesadelanto:mesesadelanto,
                pagoadelanto:pagoadelanto,
                id_inquilino: id_inquilino,
                id_cuarto: id_cuarto

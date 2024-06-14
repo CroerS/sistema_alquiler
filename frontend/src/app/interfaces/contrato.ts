@@ -6,6 +6,7 @@ export interface Contrato {
     fecha_inicio: string,
     fecha_fin: string,
     estado: boolean,
+    mesesadelanto: number,
     pagoadelanto: number,
     id_inquilino : number,
     id_cuarto: number,
