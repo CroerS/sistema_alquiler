@@ -26,4 +26,9 @@ export class PagoService {
   delete(id: number): Observable<any>{
     return this.http.delete(this.myAppUrl + this.myApiUrl +'/'+ id)
   }
+  PDFpago(id: number): Observable<any>{
+    return this.http.get(`${this.myAppUrl}${this.myApiUrl}pagoPDF/${id}`, {
+      responseType: 'blob' as 'json' // Indicar que esperamos un blob (archivo binario)
+    });
+  }
 }
