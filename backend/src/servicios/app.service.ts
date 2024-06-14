@@ -133,70 +133,135 @@ export class AppService {
         return pdfBuffer;
     }
 
-    
-    //INICIO CREANDO EL PDF DE CONTRATO
-    async PDFcontrato():Promise<Buffer>{
-      const pdfBuffer:Buffer = await new Promise(resolve =>{
-          //Creacion del document
-          const doc= new PDFDocument({
-              size:"LETTER",
-              bufferPages:true,
-              autoFirstPage: false,//para que no cree automaticamente una pagina
-          })
-
-          //Aqui el contenido del pdf
+// inicio de pdf
+    async PDFcontrato(): Promise<Buffer> {
+      const pdfBuffer: Buffer = await new Promise(resolve => {
+          // Creación del documento
+          const doc = new PDFDocument({
+              size: "LETTER",
+              bufferPages: true,
+              autoFirstPage: false, // Para que no cree automáticamente una página
+          });
+  
+          // Aquí el contenido del PDF
           let pageNumber = 0;
           doc.on('pageAdded', () => {
-            pageNumber++
-            let bottom = doc.page.margins.bottom;
-    
-            if (pageNumber > 0) {
-              doc.image(join(process.cwd(), "assets/img/logo.png"), doc.page.width - 100, 18, { fit: [55, 55], align: 'center' })
-              doc.moveTo(50, 55)
-                .lineTo(doc.page.width - 50, 55)
-                .stroke();
-            }
-            doc.page.margins.bottom = 0;
-            doc.font("Helvetica").fontSize(14);
-            doc.text(
-              'Pág. ' + pageNumber,
-              0.5 * (doc.page.width - 100),
-              doc.page.height - 50,
-              {
-                width: 100,
-                align: 'center',
-                lineBreak: false,
-              })
-            doc.page.margins.bottom = bottom;
+              pageNumber++
+              let bottom = doc.page.margins.bottom;
+  
+              if (pageNumber > 0) {
+                  doc.image(join(process.cwd(), "assets/img/logo.png"), doc.page.width - 100, 18, { fit: [55, 55], align: 'center' })
+                  doc.moveTo(50, 55)
+                      .lineTo(doc.page.width - 50, 55)
+                      .stroke();
+              }
+              doc.page.margins.bottom = 0;
+              doc.font("Helvetica").fontSize(14);
+              doc.text(
+                  'Pág. ' + pageNumber,
+                  0.5 * (doc.page.width - 100),
+                  doc.page.height - 50,
+                  {
+                      width: 100,
+                      align: 'center',
+                      lineBreak: false,
+                  })
+              doc.page.margins.bottom = bottom;
           })
-          //Aqui empieza la pagina
+          // Inicia la página
           doc.addPage();
           doc.text('', 50, 70);
           doc.font("Helvetica-Bold").fontSize(20);
-          doc.text("Contrato de Alquiler de Cuartos",{ 
-            width: doc.page.width - 100,
-            align: 'center'
+          doc.text("CONTRATO DE ALQUILER DE CUARTO", {
+              width: doc.page.width - 100,
+              align: 'center'
           });
           doc.moveDown();
+          // Contenido del contrato
           doc.font("Helvetica").fontSize(12);
-          doc.text("Este documento es para el contrato");
+          doc.font('Times-BoldItalic').fontSize(12).text('Fecha: ' + new Date().toLocaleDateString());
+          doc.font("Helvetica").fontSize(12);
           doc.moveDown();
-          doc.text("hola mundo");
+          doc.text("Se ha celebrado el presente contrato de alquiler de cuarto entre la empresa RENTHUB y el/la Sr./Sra: 'nombre. + apellido de Inquilino', llamado en adelante como 'el Inquilino'.");
+          doc.moveDown();
+          // doc.text("1. Partes Involucradas:", {bold: true}); 
+          doc.font('Helvetica-Bold').fontSize(12).text('1. Partes Involucradas:');
+          doc.font("Helvetica").fontSize(12);
 
-          //finalizacion del document
+          doc.text("   - Arrendador: RENTHUB",);
+          doc.text("   - Arrendatario: 'nombre + apellido de Inquilino'");
+          doc.moveDown();
+          // doc.text("2. Periodo del Contrato:",);
+          doc.font('Helvetica-Bold').fontSize(12).text('2. Periodo del Contrato:');
+          doc.font("Helvetica").fontSize(12);
+
+          doc.text("   El presente contrato tiene validez desde el: 'fecha_inicio' hasta el 'fecha_fin'");
+          doc.moveDown();
+          // doc.text("3. Descripción del Cuarto:");
+          doc.font('Helvetica-Bold').fontSize(12).text('3. Descripción del Cuarto:');
+          doc.font("Helvetica").fontSize(12);
+
+          doc.text("   - Número del Cuarto: 'número.Cuarto'",);
+          doc.text("   - Descripción: 'descripción.Cuarto'");
+          doc.text("   - Dimensiones: 'dimensión.Cuarto'");
+          doc.moveDown();
+          // doc.text("4. Pago:");
+          doc.font('Helvetica-Bold').fontSize(12).text('4. Pago:');
+          doc.font("Helvetica").fontSize(12);
+
+          doc.text("   El Inquilino se compromete a pagar mensualmente la cantidad de Bs 'costo.Cuarto' por concepto de alquiler del cuarto.");
+          doc.moveDown();
+          // doc.text("5. Anticipo:");
+          doc.font('Helvetica-Bold').fontSize(12).text('5. Anticipo:');
+          doc.font("Helvetica").fontSize(12);
+
+          doc.text("   El Inquilino ha realizado un anticipo de Bs 'pagoadelanto' como garantía del cumplimiento de las obligaciones estipuladas en este contrato.");
+          doc.moveDown();
+          // Método de pago
+          if (1 == 1) {
+              // doc.text("6. Método de Pago:");
+              doc.font('Helvetica-Bold').fontSize(12).text('6. Método de Pago:');
+              doc.font("Helvetica").fontSize(12);
+
+              doc.text("   El pago se realizará mediante 'método_pago.Pago'");
+              doc.moveDown();
+          }
+
+          const width = doc.page.width;
+
+          // Coordenadas Y para cada texto
+          const leftY = 50; // Alineado a la izquierda
+          const rightY = width - 150; // Alineado a la derecha
+          // Coordenada Y para ambos textos (asumimos una posición vertical)
+          const z = 640; // Por ejemplo, puedes ajustar según sea necesario
+          // Texto "Arrendador" a la izquierda
+          doc.text('------------------', leftY, z, { align: 'left' });
+          // Texto "Arrendatario" a la derecha
+          doc.text('------------------', rightY, z, { align: 'right' });
+
+          // Coordenadas X para cada texto
+          const leftX = 50; // Alineado a la izquierda
+          const rightX = width - 150; // Alineado a la derecha
+          // Coordenada Y para ambos textos (asumimos una posición vertical)
+          const y = 650; // Por ejemplo, puedes ajustar según sea necesario
+          // Texto "Arrendador" a la izquierda
+          doc.text('Arrendador', leftX, y, { align: 'left' });
+          // Texto "Arrendatario" a la derecha
+          doc.text('Arrendatario', rightX, y, { align: 'right' });
+  
+          // Finalización del documento
           const buffer: Uint8Array[] = []; // Declarar explícitamente el tipo
           doc.on('data', buffer.push.bind(buffer))
           doc.on('end', () => {
               const data = Buffer.concat(buffer)
               resolve(data)
           })
-
+  
           doc.end()
       })
       return pdfBuffer;
   }
-  //FIN DE PDF DE CONTRATO
-
+// fin de pdf
 
 
 
