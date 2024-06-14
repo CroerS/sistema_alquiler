@@ -32,5 +32,13 @@ export class ContratoService {
   delete(id: number): Observable<any>{
     return this.http.delete(this.myAppUrl + this.myApiUrl +'/'+ id)
   }
-
+  updateEstado(id:number, contrato:any): Observable<any>{
+    return this.http.put(this.myAppUrl + this.myApiUrl +'estado/'+ id, contrato); 
+  }
+  
+  PDFcontrato(id: number): Observable<any>{
+    return this.http.get(`${this.myAppUrl}${this.myApiUrl}PDFcontrato/${id}`, {
+      responseType: 'blob' as 'json' // Indicar que esperamos un blob (archivo binario)
+    });
+  }
 }

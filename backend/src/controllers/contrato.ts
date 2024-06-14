@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ContratoAlquiler} from '../models/contratoalquiler';
 import { Inquilino} from '../models/inquilino';
 import { Cuarto} from '../models/cuartos';
+import { appService } from '../servicios/app.service';
 //listar Registros
 export const getContraAlquilers = async (req: Request, res: Response) => {
     const listContratoAlquiler = await ContratoAlquiler.findAll({
@@ -135,6 +136,63 @@ export const DeleteContratoAlquiler = async (req: Request, res: Response) => {
     } catch (error) {
         res.status(400).json({
             msg: 'Upps, ocurrió un error',
+            error
+        })
+    }
+}
+
+//actualizar estado de cuarto
+export const actualizarEstado = async (req: Request, res: Response) => {
+    var { id } = req.params;
+    var{estado}= req.body;
+    try {
+           // Buscar el cuartos actual en la base de datos
+           var existingCuarto = await ContratoAlquiler.findOne({ where: { id } });
+        
+           if (!existingCuarto) {
+               return res.status(404).json({
+                   msg: 'Registro no encontrado',
+               });
+           }
+           // Actualizamos el cuartos en la base de datos
+           const [updated] = await ContratoAlquiler.update({
+               estado: estado
+           }, { where: { id } });
+   
+           if (updated) {
+               res.status(200).json({
+                   msg: `Registro actualizado exitosamente!`,
+               });
+           } else {
+               res.status(200).json({
+                msg: 'No hay cambios para actualizar',
+               });
+           }
+    } catch (error) {
+        res.status(400).json({
+            msg: 'Upps ocurrio un error',
+            error
+        })
+    }
+}
+
+export var VerPDFContrato = async (req: Request, res: Response):Promise<void> => {
+    var { id } = req.params;
+    try {
+        //aqui ocupar el servicio de para generar pdf
+       var buffer = await appService.PDFcontrato();
+       
+       res.set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename=example.pdf',
+        'Content-Length': buffer.length,
+      })
+      res.send(buffer);
+      //res.end(buffer);
+
+    } catch (error) {
+        res.status(400).json({
+            msg: 'Upps ocurrio un error',
             error
         })
     }

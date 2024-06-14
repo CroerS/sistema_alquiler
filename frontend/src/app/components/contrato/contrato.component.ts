@@ -8,6 +8,7 @@ import { Cuarto } from 'src/app/interfaces/cuarto';
 import { Inquilino } from 'src/app/interfaces/inquilino';
 import { CuartoService } from 'src/app/services/cuarto.service';
 import { InquilinoService } from 'src/app/services/inquilino.service';
+import { lastValueFrom } from 'rxjs';
 declare var $: any; // Declara la variable global jQuery
 
 @Component({
@@ -18,7 +19,7 @@ declare var $: any; // Declara la variable global jQuery
 export class ContratoComponent implements OnInit {
   @ViewChild('myModal') myModal!: ElementRef;
 
-  lista: Contrato[] = []
+  lista: Contrato[]| undefined = [];
   listCuarto: Cuarto[] = []
   listInquilino: Inquilino[] = []
   accion = 'Agregar';
@@ -42,8 +43,7 @@ export class ContratoComponent implements OnInit {
 
   ngOnInit(): void {
     this.CargarFechas();
-
-    this.getLista();
+    this.ActualizarContratos();
     this.getCuartos();
     this.getInquilinos();
   }
@@ -55,6 +55,30 @@ export class ContratoComponent implements OnInit {
     this.fecha_fin = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0]; // formatea a 'yyyy-MM-dd'
   }
 
+  async ActualizarContratos(){
+    try {
+      var fechaFin = new Date();
+
+      this.lista = await lastValueFrom(this._contratoService.getList()) ?? [];
+      console.log(this.lista);
+      
+      var estadocontrato: any = { estado: false }
+      var estadocuarto: any = { estado: true }
+      for (var contrato of this.lista!) {
+       
+        fechaFin = new Date(contrato.fecha_fin);
+        fechaFin.setDate(fechaFin.getDate() + 1);
+  
+        if(fechaFin < new Date() && contrato.estado==true){
+          await lastValueFrom(this._contratoService.updateEstado(contrato.id, estadocontrato)) ;
+          await lastValueFrom(this._cuartoService.updateEstado(contrato.id_cuarto, estadocuarto)) ;
+        }
+      }
+      this.getLista();
+    } catch (error) {
+      console.error('Error al actualizar:', error);
+    }
+  }
   getLista() {
     this._contratoService.getList().subscribe(data => {
       this.lista = data;
@@ -81,10 +105,17 @@ export class ContratoComponent implements OnInit {
   Add(){
     // Validamos que el Contrato ingrese valores
     if (this.fecha_fin == null || this.fecha_fin == null || this.pagoadelanto == null || 
-        this.id_inquilino == 0 || this.id_cuarto == 0
+        this.id_inquilino == 0 || this.id_cuarto == 0 
     ) {
       this.toastr.error('Todos los campos son obligatorios', 'Error');
       return;
+    }else{
+      var fechaFinal = new Date(this.fecha_fin);
+      fechaFinal.setDate(fechaFinal.getDate() + 1);
+      if (fechaFinal <= new Date()){
+        this.toastr.error('La fecha Fin invalida', 'Error');
+        return;
+      }
     }
     
     // Creamos el objeto
@@ -171,6 +202,36 @@ export class ContratoComponent implements OnInit {
       }
     })
 
+  }
+
+  //Funcion para generar PDF contrato
+  VerPDFContrato(item:any){
+    this._contratoService.PDFcontrato(item.id).subscribe({
+      next: (data: Blob) => {
+        const blob = new Blob([data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        
+        // Calcular las dimensiones de la ventana
+        const width = 800; // Ancho de la ventana
+        const height = 600; // Alto de la ventana
+        const left = (window.screen.width - width) / 2; // Calcular la posición izquierda para centrar
+        const top = (window.screen.height - height) / 2; // Calcular la posición superior para centrar
+        
+        // Abrir el PDF en una nueva ventana centrada horizontalmente
+        const newWindow = window.open(url, '_blank', `width=${width},height=${height},left=${left},top=${top}`);
+        
+        if (!newWindow) {
+          // Controlar el caso en que el navegador bloquee la apertura de ventanas emergentes
+          alert('Por favor, habilite las ventanas emergentes para ver el PDF.');
+        }
+  
+  
+      },
+      error: (e: HttpErrorResponse) => {
+        this.loading = false;
+        this._errorService.msjError(e);
+      }
+    })
   }
 
    private resetForm() {
