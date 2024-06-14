@@ -126,8 +126,8 @@ export class DeudaComponent implements OnInit {
         // Avanzar al siguiente mes
         fechaActual.setMonth(fechaActual.getMonth() + 1);
 
-        // Si estamos en el mes de fin y la fecha actual supera la fecha de fin, salimos del bucle
-        if (fechaActual.getMonth() === fechaFin.getMonth() && fechaActual > fechaFin) {
+        // Si estamos en el mes de fin, salimos del bucle
+        if (fechaActual.getMonth() === fechaFin.getMonth()) {
             break;
         }
     }
@@ -135,7 +135,6 @@ export class DeudaComponent implements OnInit {
     return fechasDeCobro;
 }
   
-
 
   Delete(id: number){
     this.loading = true;
