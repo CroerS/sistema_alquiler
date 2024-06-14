@@ -44,7 +44,7 @@ class Server {
         this.app.use('/api/contratos', routesContrato);
         this.app.use('/api/pagos', routesPago);
         this.app.use('/api/deudas', routesRegistroDeuda);
-        this.app.use('/api/tiempoanticipo', routesTiempoAnticipo)
+        this.app.use('/api/tiempoanticipos', routesTiempoAnticipo)
         this.app.use('/api/notificacionpagos', routesNotificacionPago);
     }
 

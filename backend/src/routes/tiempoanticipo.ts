@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { getTiempoAnticipo,GetTiempoAnticipo,NewTiempoAnticipo,UpdateTiempoAnticipo,DeleteDTiempoAnticipo } from '../controllers/tiempoanticipo';
+import { getTiempoAnticipos,GetTiempoAnticipo,NewTiempoAnticipo,UpdateTiempoAnticipo,DeleteDTiempoAnticipo } from '../controllers/tiempoanticipo';
 import validateToken from './validate-token';
 
 const router = Router();
 
-router.get('/',validateToken, getTiempoAnticipo) //Ruta para listar Registros
+router.get('/',validateToken, getTiempoAnticipos) //Ruta para listar Registros
 router.get('/:id',validateToken, GetTiempoAnticipo) //Ruta para Buscar Registro
 router.post('/',validateToken, NewTiempoAnticipo) //Ruta para Guardar Registro
 router.put('/:id',validateToken, UpdateTiempoAnticipo) //Ruta para Modificar Registro

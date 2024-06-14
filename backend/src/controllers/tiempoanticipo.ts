@@ -3,9 +3,9 @@ import { TiempoAnticipo} from '../models/tiempoanticipo';
 import { appService } from '../servicios/app.service';
 
 //listar Registros
-export const getTiempoAnticipo = async (req: Request, res: Response) => {
-    const listDeuda = await TiempoAnticipo.findAll({  order: [['id_contrato', 'ASC'],['fecha', 'ASC']]});
-    res.json(listDeuda)
+export const getTiempoAnticipos = async (req: Request, res: Response) => {
+    const listTiempo = await TiempoAnticipo.findAll({  order: [['mes', 'ASC'],['gestion', 'ASC'], ['id_contrato', 'ASC']]});
+    res.json(listTiempo)
 }
 
 //Buscar Registro
