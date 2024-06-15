@@ -47,8 +47,13 @@
                     <td>{{ item.numero }}</td>
                     <td>{{ item.descripcion }} </td>
                     <td>{{ item.dimension }} </td>
-                    <td>{{ item.costo }} </td>
-                    <td>{{ item.estado == true ? 'Disponible' : 'Ocupado' }}</td>
+                    <td>{{ item.costo }} </td>.
+                    <td>
+                      <span *ngIf="item.estado; else finalizadoBadge" class="badge rounded-pill bg-success">Disponible</span>
+                      <ng-template #finalizadoBadge>
+                        <span class="badge bg-danger">Ocupado</span>
+                      </ng-template>
+                    </td>
                     <td><button (click)="UpdateCuarto(item)" class="btn btn-sm btn-primary"><i  class="fa-solid fa-pen-to-square"></i></button></td>
                     <td><button (click)="DeleteCuarto(item.id)" class="btn btn-sm btn-danger"><i  class="fa-solid fa-trash-can"></i></button></td>
                   </tr>
