@@ -47,10 +47,10 @@
                     <td>{{ item.numero }}</td>
                     <td>{{ item.descripcion }} </td>
                     <td>{{ item.dimension }} </td>
-                    <td>{{ item.costo }} </td>.
+                    <td>{{ item.costo }} </td>
                     <td>
-                      <span *ngIf="item.estado; else finalizadoBadge" class="badge rounded-pill bg-success">Disponible</span>
-                      <ng-template #finalizadoBadge>
+                      <span *ngIf="item.estado; else cuartoestado" class="badge rounded-pill bg-success">Disponible</span>
+                      <ng-template #cuartoestado>
                         <span class="badge bg-danger">Ocupado</span>
                       </ng-template>
                     </td>
