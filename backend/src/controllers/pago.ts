@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 import { Pago} from '../models/pago';
 import { appService } from '../servicios/app.service';
+import { Deuda } from '../models/deuda';
+import { ContratoAlquiler } from '../models/contratoalquiler';
+import { Inquilino } from '../models/inquilino';
+import { Cuarto } from '../models/cuartos';
 
 //listar Registros
 export const getPagos = async (req: Request, res: Response) => {
@@ -15,8 +19,26 @@ export const GetPago = async (req: Request, res: Response) => {
 
     try {
         // Actualizamos pago en la base de datos
-        const SetPago = await Pago.findOne({ where: { id } });
+        // const SetPago = await Pago.findOne({ where: { id } });
         
+        const SetPago = await Pago.findOne({
+            include: [
+                {
+                model: Deuda,
+                include: [
+                    {
+                    model: ContratoAlquiler,
+                    include: [
+                        { model: Inquilino },
+                        { model: Cuarto }
+                    ]
+                    }
+                ]
+                }
+            ],
+            where: { id: id }
+            });
+
         if (SetPago) {
             res.status(200).json(SetPago);
         } else {
@@ -136,15 +158,33 @@ export var VerExtractoPago = async (req: Request, res: Response):Promise<void> =
     var { id } = req.params;
     try {
         //aqui ocupar el servicio de para generar pdf
-       var buffer = await appService.ExtractoPagoPDF();
-       
-       res.set({
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename=example.pdf',
-        'Content-Length': buffer.length,
-      })
-      res.send(buffer);
-      //res.end(buffer);
+        const OPago = await Pago.findOne({
+            include: [
+                {
+                model: Deuda,
+                include: [
+                    {
+                    model: ContratoAlquiler,
+                    include: [
+                        { model: Inquilino },
+                        { model: Cuarto }
+                    ]
+                    }
+                ]
+                }
+            ],
+            where: { id_deuda: id }
+            });
+    
+            if (OPago) {
+                var buffer = await appService.ExtractoPagoPDF(OPago);
+                res.set({
+                    'Content-Type': 'application/pdf',
+                    'Content-Disposition': 'attachment; filename=example.pdf',
+                    'Content-Length': buffer.length,
+                  })
+                  res.send(buffer);
+            }
 
     } catch (error) {
         res.status(400).json({

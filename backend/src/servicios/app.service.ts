@@ -129,9 +129,8 @@ export class AppService {
     }
 
 
-
 // inicio de pdf
-    async PDFcontrato(): Promise<Buffer> {
+    async PDFcontrato(contrato:any): Promise<Buffer> {
       const pdfBuffer: Buffer = await new Promise(resolve => {
           // Creación del documento
           const doc = new PDFDocument({
@@ -139,7 +138,8 @@ export class AppService {
               bufferPages: true,
               autoFirstPage: false, // Para que no cree automáticamente una página
           });
-  
+
+
           // Aquí el contenido del PDF
           let pageNumber = 0;
           doc.on('pageAdded', () => {
@@ -152,18 +152,7 @@ export class AppService {
                       .lineTo(doc.page.width - 50, 55)
                       .stroke();
               }
-              doc.page.margins.bottom = 0;
-              doc.font("Helvetica").fontSize(14);
-              doc.text(
-                  'Pág. ' + pageNumber,
-                  0.5 * (doc.page.width - 100),
-                  doc.page.height - 50,
-                  {
-                      width: 100,
-                      align: 'center',
-                      lineBreak: false,
-                  })
-              doc.page.margins.bottom = bottom;
+         
           })
           // Inicia la página
           doc.addPage();
@@ -179,43 +168,43 @@ export class AppService {
           doc.font('Times-BoldItalic').fontSize(12).text('Fecha: ' + new Date().toLocaleDateString());
           doc.font("Helvetica").fontSize(12);
           doc.moveDown();
-          doc.text("Se ha celebrado el presente contrato de alquiler de cuarto entre la empresa RENTHUB y el/la Sr./Sra: 'nombre. + apellido de Inquilino', llamado en adelante como 'el Inquilino'.");
+          doc.text(`Se ha celebrado el presente contrato de alquiler de cuarto entre la empresa RENTHUB y el/la Sr./Sra: ${contrato.inquilino?.nombre} ${contrato.inquilino?.apellido}, llamado en adelante como 'el Inquilino'.`);
           doc.moveDown();
           // doc.text("1. Partes Involucradas:", {bold: true}); 
           doc.font('Helvetica-Bold').fontSize(12).text('1. Partes Involucradas:');
           doc.font("Helvetica").fontSize(12);
 
           doc.text("   - Arrendador: RENTHUB",);
-          doc.text("   - Arrendatario: 'nombre + apellido de Inquilino'");
+          doc.text(`   - Arrendatario: ${contrato.inquilino?.nombre} ${contrato.inquilino?.apellido}`);
           doc.moveDown();
           // doc.text("2. Periodo del Contrato:",);
           doc.font('Helvetica-Bold').fontSize(12).text('2. Periodo del Contrato:');
           doc.font("Helvetica").fontSize(12);
 
-          doc.text("   El presente contrato tiene validez desde el: 'fecha_inicio' hasta el 'fecha_fin'");
+          doc.text(`  El presente contrato tiene validez desde el: ${contrato.fecha_inicio.toISOString().split('T')[0]} hasta el ${contrato.fecha_fin.toISOString().split('T')[0]} `);
           doc.moveDown();
           // doc.text("3. Descripción del Cuarto:");
           doc.font('Helvetica-Bold').fontSize(12).text('3. Descripción del Cuarto:');
           doc.font("Helvetica").fontSize(12);
 
-          doc.text("   - Número del Cuarto: 'número.Cuarto'",);
-          doc.text("   - Descripción: 'descripción.Cuarto'");
-          doc.text("   - Dimensiones: 'dimensión.Cuarto'");
+          doc.text(`   - Número del Cuarto: ${contrato.cuarto?.numero}`,);
+          doc.text(`   - Descripción:  ${contrato.cuarto?.descripcion}`);
+          doc.text(`   - Dimensiones: ${contrato.cuarto?.dimension}`);
           doc.moveDown();
           // doc.text("4. Pago:");
           doc.font('Helvetica-Bold').fontSize(12).text('4. Pago:');
           doc.font("Helvetica").fontSize(12);
 
-          doc.text("   El Inquilino se compromete a pagar mensualmente la cantidad de Bs 'costo.Cuarto' por concepto de alquiler del cuarto.");
+          doc.text(`   El Inquilino se compromete a pagar mensualmente la cantidad de Bs ${contrato.cuarto?.costo} por concepto de alquiler del cuarto.`);
           doc.moveDown();
           // doc.text("5. Anticipo:");
           doc.font('Helvetica-Bold').fontSize(12).text('5. Anticipo:');
           doc.font("Helvetica").fontSize(12);
 
-          doc.text("   El Inquilino ha realizado un anticipo de Bs 'pagoadelanto' como garantía del cumplimiento de las obligaciones estipuladas en este contrato.");
+          doc.text(`   El inquilino ha realizado un anticipo de Bs ${contrato.pagoadelanto}, correspondiente a ${contrato.mesesadelanto} meses, como garantía del cumplimiento de las obligaciones estipuladas en el presente contrato.`);
           doc.moveDown();
           // Método de pago
-          if (1 == 1) {
+          if (false) {
               // doc.text("6. Método de Pago:");
               doc.font('Helvetica-Bold').fontSize(12).text('6. Método de Pago:');
               doc.font("Helvetica").fontSize(12);
@@ -224,9 +213,9 @@ export class AppService {
               doc.moveDown();
           }
 
-          const width = doc.page.width;
-
           doc.moveDown(2);
+          doc.moveDown(4);
+          doc.moveDown(4);
           doc.text('_________________________               _________________________', { align: 'center' });
           doc.text('Arrendador                                             Arrendatario', { align: 'center' });
   
@@ -245,7 +234,7 @@ export class AppService {
 
 
 // INICIO DE PAGO PDF
-async ExtractoPagoPDF(): Promise<Buffer> {
+async ExtractoPagoPDF(pago:any): Promise<Buffer> {
     const pdfBuffer: Buffer = await new Promise((resolve, reject) => {
       
         // Crear documento PDF
@@ -275,12 +264,12 @@ async ExtractoPagoPDF(): Promise<Buffer> {
         doc.font('Times-BoldItalic').fontSize(12).text('Fecha: ' + new Date().toLocaleDateString());
         doc.font("Helvetica").fontSize(12);
         doc.moveDown();
-        doc.text('Numero de recibo: id_pago')
-        doc.text('Inquilino: "nombre. + apellido de Inquilino"');
-        doc.text('Cuarto Número: "número.Cuarto"');
-        doc.text('Periodo Cubierto: [Mes y Año]');
-        doc.text('Monto del Alquiler: Bs "costo.Cuarto"');
-        doc.text('Método de Pago: "método_pago.Pago"');
+        doc.text(`Numero de recibo: ${pago.id}`)
+        doc.text(`Inquilino: ${pago.Deuda?.ContratoAlquiler?.inquilino?.nombre} ${pago.Deuda?.ContratoAlquiler?.inquilino?.apellido} `);
+        doc.text(`Cuarto Número: ${pago.Deuda?.ContratoAlquiler?.cuarto?.numero}`);
+        doc.text(`Periodo Cubierto: ${pago.mes}-${new Date(pago.fecha).getFullYear()}`);
+        doc.text(`Monto pagado: Bs ${pago.Deuda?.ContratoAlquiler?.cuarto?.costo}`);
+        doc.text(`Método de Pago: ${pago.metodo_pago}`);
         doc.moveDown(2);
         doc.text('_________________________               _________________________', { align: 'center' });
         doc.text('Arrendador                                             Arrendatario', { align: 'center' });

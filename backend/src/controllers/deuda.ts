@@ -1,10 +1,23 @@
 import { Request, Response } from 'express';
 import { Deuda} from '../models/deuda';
 import { appService } from '../servicios/app.service';
+import { Pago } from '../models/pago';
+import { ContratoAlquiler } from '../models/contratoalquiler';
+import { Inquilino } from '../models/inquilino';
+import { Cuarto } from '../models/cuartos';
 
 //listar Registros
 export const getDeudas = async (req: Request, res: Response) => {
-    const listDeuda = await Deuda.findAll({  order: [['id_contrato', 'ASC'],['fecha', 'ASC']]});
+    const listDeuda = await Deuda.findAll({ 
+            include: [{
+                model: ContratoAlquiler,
+                include: [
+                    { model: Inquilino },
+                    { model: Cuarto }
+                    ]
+                }],
+             order: [['id_contrato', 'ASC'],['fecha', 'ASC']]
+            });
     res.json(listDeuda)
 }
 
@@ -15,7 +28,6 @@ export const GetDeuda = async (req: Request, res: Response) => {
     try {
         // Actualizamos contratoalquiler en la base de datos
         const SetDeuda = await Deuda.findOne({ where: { id } });
-        
         if (SetDeuda) {
             res.status(200).json(SetDeuda);
         } else {
@@ -165,16 +177,34 @@ export var OptenerPDF = async (req: Request, res: Response):Promise<void> => {
     var { id } = req.params;
     try {
         //aqui ocupar el servicio de para generar pdf
-       var buffer = await appService.generatePDF();
-       
-       res.set({
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename=example.pdf',
-        'Content-Length': buffer.length,
-      })
-      res.send(buffer);
-      //res.end(buffer);
+     
+        const OPago = await Pago.findOne({
+        include: [
+            {
+            model: Deuda,
+            include: [
+                {
+                model: ContratoAlquiler,
+                include: [
+                    { model: Inquilino },
+                    { model: Cuarto }
+                ]
+                }
+            ]
+            }
+        ],
+        where: { id_deuda: id }
+        });
 
+        if (OPago) {
+            var buffer = await appService.ExtractoPagoPDF(OPago);
+            res.set({
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': 'attachment; filename=example.pdf',
+                'Content-Length': buffer.length,
+              })
+              res.send(buffer);
+        }
     } catch (error) {
         res.status(400).json({
             msg: 'Upps ocurrio un error',

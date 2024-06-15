@@ -181,16 +181,32 @@ export const actualizarEstado = async (req: Request, res: Response) => {
 export var VerPDFContrato = async (req: Request, res: Response):Promise<void> => {
     var { id } = req.params;
     try {
-        //aqui ocupar el servicio de para generar pdf
-       var buffer = await appService.PDFcontrato();
-       
-       res.set({
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename=example.pdf',
-        'Content-Length': buffer.length,
-      })
-      res.send(buffer);
-      //res.end(buffer);
+        const SetContratoAlquiler = await ContratoAlquiler.findOne({  
+            include: [
+                { model: Inquilino },
+                { model: Cuarto }
+            ],
+             where: { id }
+        });
+        
+        if (SetContratoAlquiler) {
+                 //aqui ocupar el servicio de para generar pdf
+            var buffer = await appService.PDFcontrato(SetContratoAlquiler);
+            res.set({
+                'Content-Type': 'application/pdf',
+                'Content-Disposition': 'attachment; filename=example.pdf',
+                'Content-Length': buffer.length,
+            })
+
+            res.send(buffer);
+
+        } else {
+            res.status(404).json({
+                msg: 'descripcion no encontrado',
+            });
+        }
+
+ 
 
     } catch (error) {
         res.status(400).json({
