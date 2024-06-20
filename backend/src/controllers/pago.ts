@@ -6,7 +6,11 @@ import { User } from '../models/user';
 
 //listar Registros
 export const getPagos = async (req: Request, res: Response) => {
-    const listPago = await Pago.findAll();
+    const listPago = await Pago.findAll({
+        include: [
+            { model: User }
+        ]
+    });
 
     res.json(listPago)
 }
