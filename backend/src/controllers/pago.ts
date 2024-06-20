@@ -2,9 +2,7 @@ import { Request, Response } from 'express';
 import { Pago} from '../models/pago';
 import { appService } from '../servicios/app.service';
 import { Deuda } from '../models/deuda';
-import { ContratoAlquiler } from '../models/contratoalquiler';
-import { Inquilino } from '../models/inquilino';
-import { Cuarto } from '../models/cuartos';
+import { User } from '../models/user';
 
 //listar Registros
 export const getPagos = async (req: Request, res: Response) => {
@@ -23,18 +21,7 @@ export const GetPago = async (req: Request, res: Response) => {
         
         const SetPago = await Pago.findOne({
             include: [
-                {
-                model: Deuda,
-                include: [
-                    {
-                    model: ContratoAlquiler,
-                    include: [
-                        { model: Inquilino },
-                        { model: Cuarto }
-                    ]
-                    }
-                ]
-                }
+                { model: Deuda},  {model: User}
             ],
             where: { id: id }
             });
@@ -57,7 +44,7 @@ export const GetPago = async (req: Request, res: Response) => {
 
 //Guardar Registro
 export const NewPago = async (req: Request, res: Response) => {
-    const{ monto_pagado, metodo_pago, fecha,adelanto, mes, id_deuda }= req.body;
+    const{ monto_pagado, metodo_pago, fecha,adelanto, mes, id_deuda, id_user }= req.body;
     try {
         // Guardarmos cuartos en la base de datos
         await Pago.create({
@@ -66,7 +53,8 @@ export const NewPago = async (req: Request, res: Response) => {
             fecha: fecha,
             adelanto: adelanto,
             mes: mes,
-            id_deuda: id_deuda
+            id_deuda: id_deuda,
+            id_user: id_user
         })
     
         res.json({
@@ -83,7 +71,7 @@ export const NewPago = async (req: Request, res: Response) => {
 //Modificar Registro
 export const UpdatePago = async (req: Request, res: Response) => {
     var { id } = req.params;
-    var{ monto_pagado, metodo_pago, fecha, adelanto, mes, id_deuda }= req.body;
+    var{ monto_pagado, metodo_pago, fecha, adelanto, mes, id_deuda, id_user }= req.body;
 
     try {
            // Buscar el pago actual en la base de datos
@@ -102,7 +90,8 @@ export const UpdatePago = async (req: Request, res: Response) => {
                fecha: fecha,
                adelanto: adelanto,
                mes: mes,
-               id_deuda: id_deuda
+               id_deuda: id_deuda,
+               id_user: id_user
            }, { where: { id } });
    
            if (updated) {
@@ -163,14 +152,8 @@ export var VerExtractoPago = async (req: Request, res: Response):Promise<void> =
                 {
                 model: Deuda,
                 include: [
-                    {
-                    model: ContratoAlquiler,
-                    include: [
-                        { model: Inquilino },
-                        { model: Cuarto }
-                    ]
-                    }
-                ]
+                    { model: Deuda},  {model: User}
+                ],
                 }
             ],
             where: { id_deuda: id }

@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../db/connection';
 import { Deuda } from './deuda';
+import { User } from './user';
 
 // const Inquilino = require('./Inquilino');
 export const Pago = sequelize.define('Pago', {
@@ -26,11 +27,10 @@ export const Pago = sequelize.define('Pago', {
     },
     id_deuda: {
         type: DataTypes.INTEGER,
-        // references: {
-        //   model: ContratoAlquiler,
-        //   key: 'id'
-        // }
-      }
+      },
+    id_user: {
+        type: DataTypes.INTEGER,
+    },
     // Otros campos como monto del alquiler, frecuencia de pago, etc.
 },
 {
@@ -41,3 +41,5 @@ export const Pago = sequelize.define('Pago', {
 // Define the association
 Deuda.hasMany(Pago, { foreignKey: 'id_deuda' });
 Pago.belongsTo(Deuda, { foreignKey: 'id_deuda' });
+User.hasMany(Pago,{foreignKey: 'id_user'} );
+Pago.belongsTo(User, { foreignKey: 'id_user'});
