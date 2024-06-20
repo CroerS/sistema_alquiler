@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild,ElementRef} from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { ErrorService } from 'src/app/services/error.service';
@@ -20,7 +21,7 @@ declare var $: any; // Declara la variable global jQuery
 export class DeudaComponent implements OnInit {
 
   @ViewChild('myModal') myModal!: ElementRef;
-
+  private usuario:any = jwtDecode(localStorage.getItem('token')!)??'';
   pipe = new DatePipe('es-BO');
 
   listaDeuda: Deuda[] = [];
@@ -58,6 +59,7 @@ export class DeudaComponent implements OnInit {
   ngOnInit(): void {
     this.getListaDeudas();
     const today = new Date();
+    console.log(this.usuario);
     today.setDate(today.getDate());
     this.actualizarAFecha = today.toISOString().split('T')[0]; // formatea a 'yyyy-MM-dd'
   }
@@ -234,6 +236,7 @@ export class DeudaComponent implements OnInit {
       metodo_pago: this.tipo_pago,
       adelanto: "0",
       id_deuda: this.id,
+      id_user:this.usuario.id
     }
     var estado_deuda: any = { estado: true }
 

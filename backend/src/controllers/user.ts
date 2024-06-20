@@ -56,9 +56,10 @@ export const loginUser = async (req: Request, res: Response) => {
         msg: `Password Incorrecta`
     })
    }
-
+   let id = user.id;
    // Generamos token
    const token = jwt.sign({
+    id: id,
     username: username
    }, process.env.SECRET_KEY || 'pepito123');
    

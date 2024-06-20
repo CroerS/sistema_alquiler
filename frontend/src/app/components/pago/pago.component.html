@@ -22,6 +22,7 @@
                  <th scope="col">Moto a Pagar</th>
                  <th scope="col">Adelanto</th>
                  <th scope="col">Cod. Deuda</th>
+                 <th scope="col">Recibido Por</th>
                  <th width="1%"></th>
                </tr>
              </thead>
@@ -33,6 +34,7 @@
                   <td>{{ item.monto_pagado}} </td>
                   <td>{{ item.adelanto}} </td>
                   <td>{{ item.id_deuda}}</td>
+                  <td>{{ item.user?.username}}</td>
                   <td><button (click)="VerPDFPago(item.id_deuda)" class="btn btn-sm btn-outline-danger"><i  class="fa-regular fa-file-pdf"></i></button></td>
                 </tr>
              </tbody>

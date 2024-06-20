@@ -5,6 +5,7 @@ import { Pago } from '../models/pago';
 import { ContratoAlquiler } from '../models/contratoalquiler';
 import { Inquilino } from '../models/inquilino';
 import { Cuarto } from '../models/cuartos';
+import { User } from '../models/user';
 
 //listar Registros
 export const getDeudas = async (req: Request, res: Response) => {
@@ -191,11 +192,12 @@ export var OptenerPDF = async (req: Request, res: Response):Promise<void> => {
                 ]
                 }
             ]
-            }
+            },
+            {model:User}
         ],
         where: { id_deuda: id }
         });
-
+   
         if (OPago) {
             var buffer = await appService.ExtractoPagoPDF(OPago);
             res.set({

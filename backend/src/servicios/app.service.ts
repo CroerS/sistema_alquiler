@@ -270,10 +270,11 @@ async ExtractoPagoPDF(pago:any): Promise<Buffer> {
         doc.text(`Periodo Cubierto: ${pago.mes}-${new Date(pago.fecha).getFullYear()}`);
         doc.text(`Monto pagado: Bs ${pago.Deuda?.ContratoAlquiler?.cuarto?.costo}`);
         doc.text(`Método de Pago: ${pago.metodo_pago}`);
+        doc.text(`Recibido por: ${pago.user?.username}`);
         doc.moveDown(2);
         doc.text('_________________________               _________________________', { align: 'center' });
         doc.text('Arrendador                                             Arrendatario', { align: 'center' });
-
+        
         // Finalizar documento y resolver promesa con el buffer
         const buffers: Uint8Array[] = [];
         doc.on('data', (chunk: Uint8Array) => buffers.push(chunk));

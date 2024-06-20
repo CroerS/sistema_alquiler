@@ -62,10 +62,10 @@ class Server {
             await Cuarto.sync()
             await ContratoAlquiler.sync()
             await Deuda.sync()
-            await Pago.sync()
             await TiempoAnticipo.sync()
             await NotificacionPago.sync()
             await User.sync()
+            await Pago.sync()
         } catch (error) {
             console.error('Unable to connect to the database:', error);
         }

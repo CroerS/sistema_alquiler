@@ -152,14 +152,9 @@ export var VerExtractoPago = async (req: Request, res: Response):Promise<void> =
     try {
         //aqui ocupar el servicio de para generar pdf
         const OPago = await Pago.findOne({
-            include: [
-                {
-                model: Deuda,
                 include: [
                     { model: Deuda},  {model: User}
                 ],
-                }
-            ],
             where: { id_deuda: id }
             });
     
