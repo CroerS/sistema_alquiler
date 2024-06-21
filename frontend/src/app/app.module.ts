@@ -25,6 +25,7 @@ import { InquilinoComponent } from './components/inquilino/inquilino.component';
 import { ContratoComponent } from './components/contrato/contrato.component';
 import { DeudaComponent } from './components/deuda/deuda.component';
 import { PagoComponent } from './components/pago/pago.component';
+import { ReporteComponent } from './components/reporte/reporte.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { PagoComponent } from './components/pago/pago.component';
     InquilinoComponent,
     ContratoComponent,
     DeudaComponent,
-    PagoComponent
+    PagoComponent,
+    ReporteComponent
   ],
   imports: [
     BrowserModule,

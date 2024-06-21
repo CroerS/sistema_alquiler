@@ -4,7 +4,7 @@ const PDFDocument = require('pdfkit-table')
 const fs = require("fs");
 export class AppService {
 
-  async generatePDF(lista:any):Promise<Buffer>{
+  async generatePDF(lista:any,id_tipoReporte:string):Promise<Buffer>{
     const pdfBuffer:Buffer = await new Promise(resolve =>{
         //Creacion del document
         const doc= new PDFDocument({
@@ -41,7 +41,7 @@ export class AppService {
                 
                 // Dibujar el título en el pie de página, centrado y por encima de la línea
                 doc.fontSize(16)
-                    .text('Reporte de Deudas', {
+                    .text(`Reporte de ${(id_tipoReporte==="0")?'Deudas':'Pagos'}`, {
                         width: doc.page.width - 100,
                         align: 'center',
                         baseline: 'bottom',

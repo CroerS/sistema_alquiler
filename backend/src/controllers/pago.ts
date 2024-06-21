@@ -186,12 +186,12 @@ export const GetRpt = async (req: Request, res: Response) => {
             JOIN contratoalquilers ca ON (d.id_contrato=ca.id)
             JOIN cuartos c ON (ca.id_cuarto=c.id)
             JOIN inquilinos i ON (ca.id_inquilino=i.id)
-            WHERE d.estado=false
+            WHERE d.estado=${(id==="0")?false:true}
             GROUP BY  d.id_contrato,i.nombre,i.apellido,c.numero,c.descripcion,d.estado
           `);
 
        if (resultados[0].length > 0) {
-        var buffer = await appService.generatePDF(resultados[0]);
+        var buffer = await appService.generatePDF(resultados[0],id);
         res.set({
             'Content-Type': 'application/pdf',
             'Content-Disposition': 'attachment; filename=example.pdf',
@@ -200,7 +200,7 @@ export const GetRpt = async (req: Request, res: Response) => {
         res.status(200).send(buffer);
         } else {
             res.status(404).json({
-                msg: 'descripcion no asas',
+                msg: 'error',
             });
         }
 

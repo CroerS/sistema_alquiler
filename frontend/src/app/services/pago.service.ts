@@ -31,4 +31,9 @@ export class PagoService {
       responseType: 'blob' as 'json' // Indicar que esperamos un blob (archivo binario)
     });
   }
+  ReporteDeudas(id:number): Observable<any>{
+    return this.http.get(this.myAppUrl + this.myApiUrl +'pdf/'+ id, {
+      responseType: 'blob' as 'json' // Indicar que esperamos un blob (archivo binario)
+    });
+  }
 }

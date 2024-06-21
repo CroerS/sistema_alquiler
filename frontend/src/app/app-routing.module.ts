@@ -13,6 +13,7 @@ import { InquilinoComponent } from './components/inquilino/inquilino.component';
 import { ContratoComponent } from './components/contrato/contrato.component';
 import { DeudaComponent } from './components/deuda/deuda.component';
 import { PagoComponent } from './components/pago/pago.component';
+import { ReporteComponent } from './components/reporte/reporte.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'contrato', component: ContratoComponent },
   { path: 'deuda', component: DeudaComponent},
   { path: 'pago', component: PagoComponent},
+  { path: 'reporte', component: ReporteComponent},
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'login', pathMatch: 'full' }
 ];
