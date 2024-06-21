@@ -16,6 +16,9 @@ import { Pago } from './pago';
 import { Deuda } from './deuda';
 import { TiempoAnticipo } from './tiempoanticipo';
 import { NotificacionPago } from './notificacionpago';
+// import { seedUsers} from '../seeders/seeduser'; // Importa la función de seed
+
+import sequelize from '../db/connection';
 
 class Server {
     private app: Application;
@@ -66,6 +69,7 @@ class Server {
             await NotificacionPago.sync()
             await User.sync()
             await Pago.sync()
+            // await seedUsers(); // Llama a la función de seed aquí
         } catch (error) {
             console.error('Unable to connect to the database:', error);
         }

@@ -3,7 +3,7 @@ import { Cuarto } from '../models/cuartos';
 
 //listar Registros
 export const getCuartos = async (req: Request, res: Response) => {
-    const listCuartos = await Cuarto.findAll();
+    const listCuartos = await Cuarto.findAll();//{where:{estado:true}}
 
     res.json(listCuartos)
 }

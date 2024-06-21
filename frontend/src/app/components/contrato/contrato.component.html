@@ -88,7 +88,7 @@
                     <label for="cuarto" class="col-form-label">Cuarto o Pieza</label>
                     <select [(ngModel)]="id_cuarto" class="form-select form-select-sm" name="cuarto" id="cuarto" aria-placeholder="Cuartos" (change)="onSelectChange($event)">
                         <option value="0" selected disabled>Seleccionar Pieza</option>
-                        <option *ngFor="let item of listCuarto" [value]="item.id" >Cuarto {{ item.numero }}</option>
+                        <option *ngFor="let item of listCuarto" [value]="item.id" [ngClass]="{'fw-bold': true, 'text-success': item.estado, 'text-danger': !item.estado}">Cuarto {{ item.numero }}</option>
                       </select>
                   </div>
                   <div class="col">

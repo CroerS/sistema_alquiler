@@ -21,7 +21,23 @@ export const getDeudas = async (req: Request, res: Response) => {
             });
     res.json(listDeuda)
 }
-
+//listar Registros por contratos
+export const getDeudasporContratos = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const listDeuda = await Deuda.findAll({ 
+            include: [{
+                model: ContratoAlquiler,
+                include: [
+                    { model: Inquilino },
+                    { model: Cuarto }
+                    ]
+                }],
+             order: [['id_contrato', 'ASC'],['fecha', 'ASC']],
+             where: {id_contrato:id}
+            }
+            );
+    res.json(listDeuda)
+}
 //Buscar Registro
 export const GetDeuda = async (req: Request, res: Response) => {
     const { id } = req.params;

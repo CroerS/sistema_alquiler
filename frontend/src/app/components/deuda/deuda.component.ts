@@ -26,6 +26,7 @@ export class DeudaComponent implements OnInit {
 
   listaDeuda: Deuda[] = [];
   listaContrato: Contrato[]| undefined = [];
+  listaContratoFiltro: Contrato[]| undefined = [];
 
   accion = 'Agregar';
   loading: boolean = false;
@@ -57,22 +58,49 @@ export class DeudaComponent implements OnInit {
 
   //funcion que se ejecuta al entrar al programa
   ngOnInit(): void {
+    this.GetListaContratos();
     this.getListaDeudas();
     const today = new Date();
     console.log(this.usuario);
     today.setDate(today.getDate());
     this.actualizarAFecha = today.toISOString().split('T')[0]; // formatea a 'yyyy-MM-dd'
   }
-  async getListaDeudas() {
-    await this._deudaService.getList().subscribe(data => {
-     this.listaDeuda = data;
-    // console.log('Lista de deudas:', this.listaDeuda);
-    });
+  async GetListaContratos(){
+    this._contratoService.getList().subscribe(data => {
+      this.listaContratoFiltro = data;
+    })
   }
+
+  async getListaDeudas() {
+
+    if(this.id_contrato===0){
+      await this._deudaService.getList().subscribe(data => {
+        this.listaDeuda = data;
+       });
+    }else{
+      await this._deudaService.getListporContrato(this.id_contrato).subscribe(data => {
+        this.listaDeuda = data;
+       });
+    }
+
+  }
+  
+  //Eventos:
+  async onSelectChange(event: Event): Promise<void> {
+    const selectElement = event.target as HTMLSelectElement;
+    this.id_contrato = parseInt(selectElement.value);
+    await this.getListaDeudas();
+
+    if(this.id_contrato===0){
+      this.listaContrato= await lastValueFrom(this._contratoService.getList()); // Obtener la lista de contratos de manera síncrona
+    }else{
+      this.listaContrato = await lastValueFrom(this._contratoService.getContrato(this.id_contrato)); 
+    }
+  }
+  
   async actualizarDeudas() {
     try {
-      this.listaContrato= await this._contratoService.getList().toPromise(); // Obtener la lista de contratos de manera síncrona
-      
+
       // Iterar sobre cada contrato y registrar las deudas mensuales
       for (var contrato of this.listaContrato!) {
         if(contrato.estado==true){ //contratos vigentes
@@ -128,9 +156,14 @@ export class DeudaComponent implements OnInit {
       let fechaInicio = new Date(contrato.fecha_inicio);
       fechaInicio.setDate(fechaInicio.getDate() + 1); // Ajustar inicio al día siguiente para evitar duplicados
       let fechaFin = new Date(contrato.fecha_fin);
+      fechaFin.setDate(fechaFin.getDate() + 1);
       const fechasDeCobro = await this.calcularFechasDeCobro(fechaInicio, fechaFin);
+      console.log('fechas de cobro:',fechasDeCobro,fechaInicio,fechaFin)
 
-  
+      //Fecha de actualizacion
+      let fechaFinActualizacion =new Date(this.actualizarAFecha);
+      fechaFinActualizacion.setDate(fechaFinActualizacion.getDate() + 1);
+
       for (const fecha of fechasDeCobro) {
       
          if (this.listaDeuda.filter(x => { const fechaDeuda = new Date(x.fecha);
@@ -138,7 +171,7 @@ export class DeudaComponent implements OnInit {
                                                     fechaDeuda.getMonth() === fecha.getMonth() &&
                                                     fechaDeuda.getDate() === fecha.getDate();}).length === 0) {
       
-              if (fecha <= new Date(this.actualizarAFecha)) {
+              if (fecha <= fechaFinActualizacion) {
               let mes = fecha.getMonth() + 1; // Mes en base 1
               let deuda: Deuda = {
                 id: 0, // El id será generado por la base de datos
@@ -173,28 +206,46 @@ export class DeudaComponent implements OnInit {
   calcularFechasDeCobro(fechaInicio: Date, fechaFin: Date): Date[] {
     // Reiniciar el arreglo de fechas
     let fechasDeCobro: Date[] = [];
-
     // Crear una copia de la fecha de inicio para no modificar la original
     let fechaActual = new Date(fechaInicio);
+    var sw=false;
+    let fechaSiguienteMes;
 
     // Iterar hasta que la fecha actual llegue al mes de la fecha de fin
     while (fechaActual <= fechaFin) {
+
         // Agregar la fecha actual al arreglo
         fechasDeCobro.push(new Date(fechaActual));
 
-        // Avanzar al siguiente mes
-        fechaActual.setMonth(fechaActual.getMonth() + 1);
-
         // Si estamos en el mes de fin, salimos del bucle
-        if (fechaActual.getMonth() === fechaFin.getMonth()) {
-            break;
+        if (fechaActual.getMonth() === fechaFin.getMonth()+1 && fechaActual.getFullYear() === fechaFin.getFullYear()) {
+          break;
         }
-    }
 
-    return fechasDeCobro;
-}
+        if(fechaActual.getMonth()+1===1){
+          if(fechaActual.getDate()===31 || fechaActual.getDate()==30){
+            fechaActual= this.obtenerUltimaFechaFebrero(fechaActual.getFullYear(),1);
+            sw=true;
+            continue
+          }
+        }
+
+        fechaActual.setMonth(fechaActual.getMonth() + 1);
+        if(sw){
+          fechaActual.setDate(30);
+          sw=false;
+        }
   
+    }
+    return fechasDeCobro;
+  }
 
+  obtenerUltimaFechaFebrero(anio: number, mes: number): Date {
+    if (mes !== 1) {
+        throw new Error("El mes proporcionado no es febrero.");
+    }
+    return new Date(anio, 2, 0);
+  }
   Delete(id: number){
     this.loading = true;
     this._deudaService.delete(id).subscribe({

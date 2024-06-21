@@ -20,6 +20,9 @@ export class DeudaService {
   getList(): Observable<Deuda[]> {
     return this.http.get<Deuda[]>(`${this.myAppUrl}${this.myApiUrl}`)
   }
+  getListporContrato(id: number): Observable<Deuda[]> {
+    return this.http.get<Deuda[]>(`${this.myAppUrl}${this.myApiUrl}porContrato/${id}`)
+  }
 
   save(deuda: Deuda): Observable<string> {
     return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}`, deuda)

@@ -5,8 +5,8 @@
    <div class="card ">
        <div class="card-body">
         <div class="row mb-2">
-            <div class="col-md-6">
-                <div class="row">
+            <div class="col-md-4 ">
+                <div class="row align-items-center p-0">
                     <div class="col-auto">
                         <label for="idfctualizacion" class="col-form-label">Hasta la fecha:</label>
                     </div>
@@ -16,13 +16,23 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="d-flex justify-content-end">
-                    <div class="form-group">
-                        <button type="button" class="agregar btn btn-success btn-sm" (click)="actualizarDeudas()">Actualizar Deudas</button>
-                    </div>
+            <div class="col col-lg-8 col-md-12 col-sm-12 d-flex justify-content-end ">
+              <div class="row align-items-center p-0">
+                <div class="col-auto">
+                    <label for="contrato" class="col-form-label ">Contrato:</label>
                 </div>
+                <div class="col-auto ">
+                  <select [(ngModel)]="id_contrato"(change)="onSelectChange($event)" class="form-select form-select-sm " name="contrato" id="contrato" aria-placeholder="Contrato">
+                      <option value="0" selected>Seleccionar Todos</option>
+                      <option *ngFor="let item of listaContratoFiltro" [value]="item.id">{{ item.inquilino?.nombre }} {{ item.inquilino?.apellido }}, Nro. Cuarto: {{ item.cuarto?.numero }}</option>
+                  </select>
+                </div>
+                <div class="col-auto">
+                  <button type="button" class="agregar btn btn-success btn-sm" (click)="actualizarDeudas()">Actualizar Deudas</button>
+                </div>
+              </div>
             </div>
+
         </div>
          <div class="text-center">
             <div class="table-responsive">
@@ -34,6 +44,7 @@
                    <th scope="col">Mes - Gestión</th>
                    <th scope="col">Cod. Contrato</th>
                    <th scope="col">Nombre de inquilino</th>
+                   <th scope="col">Nro. Cuarto</th>
                    <th scope="col">Estado</th>
                    <th scope="col">Monto</th>
 
@@ -47,9 +58,9 @@
                     <td>{{ item.id}} </td>
                     <td>{{ item.fecha | date:'dd/MM/yyyy' }} </td>
                     <td>{{ item.mes+'-'+(item.fecha | date:'yyyy')}} </td>
-              
                     <td>{{ item.id_contrato}} </td>
                     <td>{{ item.ContratoAlquiler?.inquilino?.nombre +' '+ item.ContratoAlquiler?.inquilino?.apellido}} </td>
+                    <td>Nro.: {{ item.ContratoAlquiler?.cuarto?.numero}} </td>
 
                     <td>
                       <span *ngIf="item.estado; else finalizadoBadge" class="badge rounded-pill bg-success">Cancelado</span>

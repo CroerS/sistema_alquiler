@@ -33,6 +33,7 @@ export class ContratoComponent implements OnInit {
   pagoadelanto: number=0;
   id_inquilino:number = 0;
   id_cuarto: number= 0;
+  id_cuartoAuxiliar: number= 0;
 
   //adicionales
   costoMensualCuarto :number = 0;
@@ -157,6 +158,7 @@ export class ContratoComponent implements OnInit {
           this.resetForm();
           this.closeModal();
           this.getLista();
+          this.getCuartos();
         },
         error: (e: HttpErrorResponse) => {
           this.loading = false;
@@ -170,6 +172,28 @@ export class ContratoComponent implements OnInit {
           this.loading = false;
           this.accion = 'Agregar';
           this.toastr.success(`El Contrato con ID ${this.id} fue Actualizado con exito`, 'Contrato Actualizado');
+          var id_cuartonuevo=this.id_cuarto;
+          if(this.id_cuarto!=this.id_cuartoAuxiliar){
+            var contrato: any = { estado: true }
+            
+            this._cuartoService.updateEstado(this.id_cuartoAuxiliar, contrato).subscribe({
+              next: (res) => {
+                contrato.estado=false;
+                this._cuartoService.updateEstado(id_cuartonuevo, contrato).subscribe({
+                  next: (res) => {
+                    this.getCuartos();
+                  },
+                  error: (e: HttpErrorResponse) => {
+                    this.loading = false;
+                  }
+                });
+              },
+              error: (e: HttpErrorResponse) => {
+                this.loading = false;
+              }
+            });
+          }
+    
           this.resetForm();
           this.closeModal();
           this.getLista();
@@ -193,6 +217,7 @@ export class ContratoComponent implements OnInit {
     this.estado = contrato.estado,
     this.pagoadelanto = contrato.pagoadelanto,
     this.id_cuarto = contrato.id_cuarto,
+    this.id_cuartoAuxiliar=contrato.id_cuarto,
     this.id_inquilino = contrato.id_inquilino
     //variables adicionales
     this.costoMensualCuarto = contrato.cuarto?.costo!,

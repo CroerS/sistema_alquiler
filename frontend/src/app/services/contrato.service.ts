@@ -20,6 +20,9 @@ export class ContratoService {
   getList(): Observable<Contrato[]> {
     return this.http.get<Contrato[]>(`${this.myAppUrl}${this.myApiUrl}`)
   }
+  getContrato(id:number): Observable<Contrato[]> {
+    return this.http.get<Contrato[]>(`${this.myAppUrl}${this.myApiUrl}/${id}`)
+  }
 
   save(contrato: Contrato): Observable<string> {
     return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}`, contrato)

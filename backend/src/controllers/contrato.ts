@@ -20,7 +20,11 @@ export const GetContratoAlquiler = async (req: Request, res: Response) => {
 
     try {
         // Actualizamos contratoalquiler en la base de datos
-        const SetContratoAlquiler = await ContratoAlquiler.findOne({ where: { id } });
+        const SetContratoAlquiler = await ContratoAlquiler.findAll({
+            include: [
+                { model: Inquilino },
+                { model: Cuarto }
+            ], where: { id } });
         
         if (SetContratoAlquiler) {
             res.status(200).json(SetContratoAlquiler);
