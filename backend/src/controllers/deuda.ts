@@ -6,6 +6,7 @@ import { ContratoAlquiler } from '../models/contratoalquiler';
 import { Inquilino } from '../models/inquilino';
 import { Cuarto } from '../models/cuartos';
 import { User } from '../models/user';
+import sequelize from '../db/connection';
 
 //listar Registros
 export const getDeudas = async (req: Request, res: Response) => {
@@ -223,6 +224,60 @@ export var OptenerPDF = async (req: Request, res: Response):Promise<void> => {
               })
               res.send(buffer);
         }
+    } catch (error) {
+        res.status(400).json({
+            msg: 'Upps ocurrio un error',
+            error
+        })
+    }
+}
+
+
+export var RangoDeudaPDF = async (req: Request, res: Response):Promise<void> => {
+    var{ fecha_inicio, fecha_fin }= req.body;
+    try{
+        // res.status(200).json({
+        //     msg: fecha_inicio,
+        //    });
+        //    return  ;
+        const resultados: any = await sequelize.query(`
+            SELECT
+                cuartos.numero AS numero_cuarto,
+                CONCAT(inquilinos.nombre, ' ', inquilinos.apellido) AS nombre_inquilino,
+                deudas.mes AS mes_deuda,
+                YEAR(deudas.fecha) as gestion,
+                deudas.monto_deuda AS monto_deuda,
+                CASE
+                    WHEN deudas.estado = false THEN 'Pendiente'
+                    WHEN deudas.estado = true THEN 'Pagada'
+                    ELSE 'Desconocido'
+                END AS estado_deuda
+            FROM
+                deudas
+            JOIN contratoalquilers ON deudas.id_contrato = contratoalquilers.id
+            JOIN cuartos ON contratoalquilers.id_cuarto = cuartos.id
+            JOIN inquilinos ON contratoalquilers.id_inquilino = inquilinos.id
+            LEFT JOIN pagos ON deudas.id  = pagos.id_deuda
+            WHERE
+                DATE(deudas.fecha) BETWEEN DATE('${fecha_inicio}') AND DATE('${fecha_fin}')
+                ORDER BY
+                cuartos.numero ASC;
+                    `);
+
+       if (resultados[0].length > 0) {
+        var buffer = await appService.RangoDeudaPDF(resultados[0]);
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename=example.pdf',
+            'Content-Length': buffer.length,
+          })
+        res.status(200).send(buffer);
+        } else {
+            res.status(404).json({
+                msg: 'error',
+            });
+        }
+
     } catch (error) {
         res.status(400).json({
             msg: 'Upps ocurrio un error',
