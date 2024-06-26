@@ -35,7 +35,6 @@ export const ContratoAlquiler = sequelize.define('ContratoAlquiler', {
     },
     id_cuarto: {
         type: DataTypes.INTEGER,
-        unique: true
         // references: {
         //   model: Cuarto,
         //   key: 'id'
