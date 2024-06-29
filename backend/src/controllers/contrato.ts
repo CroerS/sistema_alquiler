@@ -3,6 +3,7 @@ import { ContratoAlquiler} from '../models/contratoalquiler';
 import { Inquilino} from '../models/inquilino';
 import { Cuarto} from '../models/cuartos';
 import { appService } from '../servicios/app.service';
+import sequelize from '../db/connection';
 //listar Registros
 export const getContraAlquilers = async (req: Request, res: Response) => {
     const listContratoAlquiler = await ContratoAlquiler.findAll({
@@ -19,6 +20,7 @@ export const GetContratoAlquiler = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
+       
         // Actualizamos contratoalquiler en la base de datos
         const SetContratoAlquiler = await ContratoAlquiler.findAll({
             include: [
@@ -211,6 +213,83 @@ export var VerPDFContrato = async (req: Request, res: Response):Promise<void> =>
         }
 
  
+
+    } catch (error) {
+        res.status(400).json({
+            msg: 'Upps ocurrio un error',
+            error
+        })
+    }
+}
+
+
+export var ContratosPorVencer = async (req: Request, res: Response)=> {
+    try{
+      
+        const resultados: any = await sequelize.query(`
+           			SELECT contratoalquilers.id, DATE(contratoalquilers.fecha_inicio) fechainicio, DATE(contratoalquilers.fecha_fin) fechafin,  
+            		CASE
+                    WHEN estado = false THEN 'Pendiente'
+                    WHEN estado = true THEN 'Pagada'
+                    ELSE 'Desconocido'
+               		END AS estado,
+                	contratoalquilers.mesesadelanto, contratoalquilers.pagoadelanto, CONCAT(inquilinos.nombre, ' ', 					inquilinos.apellido) AS nombre_inquilino, id_cuarto
+                    FROM contratoalquilers,inquilinos
+                    WHERE MONTH(fecha_fin) = MONTH(CURDATE())
+                    AND YEAR(fecha_fin) = YEAR(CURDATE())
+                    AND estado = 1
+                    AND contratoalquilers.id_inquilino = inquilinos.id
+                    ORDER BY fecha_fin;
+                    `);
+       if (resultados[0].length > 0) {
+        var buffer = await appService.ContratoPorVencer(resultados[0]);
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename=example.pdf',
+            'Content-Length': buffer.length,
+          })
+        res.status(200).send(buffer);
+        } else {
+            res.status(404).json({
+                msg: 'error',
+            });
+        }
+
+    } catch (error) {
+        res.status(400).json({
+            msg: 'Upps ocurrio un error',
+            error
+        })
+    }
+}
+
+
+export var CuartosSolicitado = async (req: Request, res: Response):Promise<void> => {
+    try{
+        // res.status(200).json({
+        //     msg: fecha_inicio,
+        //    });
+        //    return  ;
+        const resultados: any = await sequelize.query(`
+           SELECT id_cuarto, COUNT(*) AS cantidad_contratos
+            FROM contratoalquilers
+            GROUP BY id_cuarto
+            ORDER BY cantidad_contratos DESC;
+                    `);
+
+       if (resultados[0].length > 0) {
+        var buffer = await appService.CuartoSolicitado(resultados[0]);
+        res.set({
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'attachment; filename=example.pdf',
+            'Content-Length': buffer.length,
+          })
+        res.status(200).send(buffer);
+        } else {
+            res.status(404).json({
+                msg: 'error',
+            });
+        }
 
     } catch (error) {
         res.status(400).json({

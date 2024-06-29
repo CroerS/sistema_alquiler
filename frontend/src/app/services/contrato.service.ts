@@ -44,4 +44,16 @@ export class ContratoService {
       responseType: 'blob' as 'json' // Indicar que esperamos un blob (archivo binario)
     });
   }
+
+  ContratosPorVencer(): Observable<any>{
+    return this.http.get(`${this.myAppUrl}${this.myApiUrl}ContratosPorVencer`, {
+      responseType: 'blob' as 'json' // Indicar que esperamos un blob (archivo binario)
+    });
+  }
+
+  CuartoSolicitado(): Observable<any>{
+    return this.http.get(`${this.myAppUrl}${this.myApiUrl}CuartoSolicitado`, {
+      responseType: 'blob' as 'json' // Indicar que esperamos un blob (archivo binario)
+    });
+  }
 }

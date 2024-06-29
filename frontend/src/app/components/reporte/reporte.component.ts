@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ErrorService } from 'src/app/services/error.service';
 import { PagoService } from 'src/app/services/pago.service';
 import { DeudaService} from 'src/app/services/deuda.service';
+import { ContratoService } from 'src/app/services/contrato.service';
 
 @Component({
   selector: 'app-reporte',
@@ -15,7 +16,9 @@ export class ReporteComponent implements OnInit {
   constructor(
     private PagoService: PagoService,
     private _errorService: ErrorService,
-    private _deudaService: DeudaService
+    private _deudaService: DeudaService,
+    private _contratoService: ContratoService,
+    
   ) { }
 
   ngOnInit(
@@ -26,27 +29,32 @@ export class ReporteComponent implements OnInit {
   Ejecutar(){
     this.PagosYDeudaMensuales()
   }
+  mostrarventana(data: Blob){
+    const blob = new Blob([data], { type: 'application/pdf' });
+    const url = window.URL.createObjectURL(blob);
+    
+    // Calcular las dimensiones de la ventana
+    const width = 800; // Ancho de la ventana
+    const height = 600; // Alto de la ventana
+    const left = (window.screen.width - width) / 2; // Calcular la posición izquierda para centrar
+    const top = (window.screen.height - height) / 2; // Calcular la posición superior para centrar
+    
+    // Abrir el PDF en una nueva ventana centrada horizontalmente
+    const newWindow = window.open(url, '_blank', `width=${width},height=${height},left=${left},top=${top}`);
+    
+    if (!newWindow) {
+      // Controlar el caso en que el navegador bloquee la apertura de ventanas emergentes
+      alert('Por favor, habilite las ventanas emergentes para ver el PDF.');
+    }
+  }
+
+
 
   PagosYDeudaMensuales(){
     if(this.id_reporte==0 || this.id_reporte==1){
       this.PagoService.ReporteDeudas(this.id_reporte).subscribe({
         next: (data: Blob) => {
-          const blob = new Blob([data], { type: 'application/pdf' });
-          const url = window.URL.createObjectURL(blob);
-          
-          // Calcular las dimensiones de la ventana
-          const width = 800; // Ancho de la ventana
-          const height = 600; // Alto de la ventana
-          const left = (window.screen.width - width) / 2; // Calcular la posición izquierda para centrar
-          const top = (window.screen.height - height) / 2; // Calcular la posición superior para centrar
-          
-          // Abrir el PDF en una nueva ventana centrada horizontalmente
-          const newWindow = window.open(url, '_blank', `width=${width},height=${height},left=${left},top=${top}`);
-          
-          if (!newWindow) {
-            // Controlar el caso en que el navegador bloquee la apertura de ventanas emergentes
-            alert('Por favor, habilite las ventanas emergentes para ver el PDF.');
-          }
+          this.mostrarventana(data)
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
@@ -54,10 +62,24 @@ export class ReporteComponent implements OnInit {
       })
     }
     if(this.id_reporte==2){
-      
+      this._contratoService.ContratosPorVencer().subscribe({
+        next: (data: Blob) => {
+          this.mostrarventana(data)
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      })
     }
     if(this.id_reporte==3){
-
+      this._contratoService.CuartoSolicitado().subscribe({
+        next: (data: Blob) => {
+          this.mostrarventana(data)
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      })
     }
     if(this.id_reporte==4){
       var fechas:  any={
@@ -66,22 +88,7 @@ export class ReporteComponent implements OnInit {
       }
       this._deudaService.RangoDeudaPDF(fechas).subscribe({
         next: (data: Blob) => {
-          const blob = new Blob([data], { type: 'application/pdf' });
-          const url = window.URL.createObjectURL(blob);
-          
-          // Calcular las dimensiones de la ventana
-          const width = 800; // Ancho de la ventana
-          const height = 600; // Alto de la ventana
-          const left = (window.screen.width - width) / 2; // Calcular la posición izquierda para centrar
-          const top = (window.screen.height - height) / 2; // Calcular la posición superior para centrar
-          
-          // Abrir el PDF en una nueva ventana centrada horizontalmente
-          const newWindow = window.open(url, '_blank', `width=${width},height=${height},left=${left},top=${top}`);
-          
-          if (!newWindow) {
-            // Controlar el caso en que el navegador bloquee la apertura de ventanas emergentes
-            alert('Por favor, habilite las ventanas emergentes para ver el PDF.');
-          }
+          this.mostrarventana(data)
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
