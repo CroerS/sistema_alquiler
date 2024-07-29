@@ -4,6 +4,9 @@ import { appService } from '../servicios/app.service';
 import { Deuda } from '../models/deuda';
 import { User } from '../models/user';
 import  sequelize from '../db/connection'
+import { ContratoAlquiler } from '../models/contratoalquiler';
+import { Inquilino } from '../models/inquilino';
+import { Cuarto } from '../models/cuartos';
 //listar Registros
 export const getPagos = async (req: Request, res: Response) => {
     const listPago = await Pago.findAll({
@@ -152,12 +155,24 @@ export var VerExtractoPago = async (req: Request, res: Response):Promise<void> =
     try {
         //aqui ocupar el servicio de para generar pdf
         const OPago = await Pago.findOne({
+            include: [
+                {
+                model: Deuda,
                 include: [
-                    { model: Deuda},  {model: User}
-                ],
+                    {
+                    model: ContratoAlquiler,
+                    include: [
+                        { model: Inquilino },
+                        { model: Cuarto }
+                    ]
+                    }
+                ]
+                },
+                {model:User}
+            ],
             where: { id_deuda: id }
             });
-    
+       
             if (OPago) {
                 var buffer = await appService.ExtractoPagoPDF(OPago);
                 res.set({

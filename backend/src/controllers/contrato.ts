@@ -4,6 +4,39 @@ import { Inquilino} from '../models/inquilino';
 import { Cuarto} from '../models/cuartos';
 import { appService } from '../servicios/app.service';
 import sequelize from '../db/connection';
+import { TiempoAnticipo } from '../models/tiempoanticipo';
+
+
+// Function to handle anticipos
+const handleAnticipos = async (fecha_inicio: string, fecha_fin: string, mesesadelanto: number, contratoId: number) => {
+    var fechaInicio = new Date(fecha_inicio);
+    fechaInicio.setDate(fechaInicio.getDate() + 1);
+    let mesinicio = fechaInicio.getMonth() + 1; // getMonth() devuelve 0 para enero, así que sumamos 1
+    let anioinicio = fechaInicio.getFullYear();
+    let mesfin = new Date(fecha_fin).getMonth() + 1;
+    let aniofin = new Date(fecha_fin).getFullYear();
+
+    let count = 1;
+    while (count <= mesesadelanto) {
+        if (mesinicio > 12) {
+            mesinicio = 1;
+            anioinicio++;
+        }
+        if (anioinicio > aniofin || (anioinicio === aniofin && mesinicio > mesfin)) {
+            break;
+        }
+        await TiempoAnticipo.create({
+            mes: mesinicio,
+            gestion: anioinicio,
+            id_contrato: contratoId
+        });
+        count++;
+        mesinicio++;
+    }
+};
+
+
+
 //listar Registros
 export const getContraAlquilers = async (req: Request, res: Response) => {
     const listContratoAlquiler = await ContratoAlquiler.findAll({
@@ -20,14 +53,14 @@ export const GetContratoAlquiler = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     try {
-       
+
         // Actualizamos contratoalquiler en la base de datos
         const SetContratoAlquiler = await ContratoAlquiler.findAll({
             include: [
                 { model: Inquilino },
                 { model: Cuarto }
             ], where: { id } });
-        
+
         if (SetContratoAlquiler) {
             res.status(200).json(SetContratoAlquiler);
         } else {
@@ -50,7 +83,7 @@ export const NewContratoAlquiler = async (req: Request, res: Response) => {
     try {
         const id = id_cuarto;
         // Guardarmos cuartos en la base de datos
-        const creado =  await ContratoAlquiler.create({
+        const creado : any = await ContratoAlquiler.create({
             fecha_inicio: fecha_inicio,
             fecha_fin: fecha_fin,
             estado: estado,
@@ -63,10 +96,17 @@ export const NewContratoAlquiler = async (req: Request, res: Response) => {
              // Actualizamos el estado del cuarto
             await Cuarto.update({ estado: false}, { where: { id } });
         }
+
+        const contratoId = creado.id; // Obtenemos el ID del contrato creado
     
+       if (mesesadelanto > 0) {
+        await handleAnticipos(fecha_inicio, fecha_fin, mesesadelanto, contratoId);
+        }
+
         res.json({
-            msg: `Contrato de Alquiler creado exitosamente!`
+            msg: `Contrato de Alquiler creado exitosamente!`,
         })
+
     } catch (error) {
         res.status(400).json({
             msg: 'Upps ocurrio un error',
@@ -74,6 +114,7 @@ export const NewContratoAlquiler = async (req: Request, res: Response) => {
         })
     }
 }
+
 
 //Modificar Registro
 export const UpdateContratoAlquiler = async (req: Request, res: Response) => {
@@ -89,7 +130,7 @@ export const UpdateContratoAlquiler = async (req: Request, res: Response) => {
                    msg: 'Registro no encontrado',
                });
            }
-           
+
            // Actualizamos el cuartos en la base de datos
            const [updated] = await ContratoAlquiler.update({
                fecha_inicio: fecha_inicio,
@@ -100,10 +141,18 @@ export const UpdateContratoAlquiler = async (req: Request, res: Response) => {
                id_inquilino: id_inquilino,
                id_cuarto: id_cuarto
            }, { where: { id } });
-   
+
            if (updated) {
                 const obtejo= await ContratoAlquiler.findOne({ where: { id } });
                 // Actualizamos el estado del cuarto
+                if(mesesadelanto>0){
+                    const deleted = await TiempoAnticipo.destroy({
+                        where: { id_contrato:id }
+                    });
+                    if(deleted){
+                        await handleAnticipos(fecha_inicio, fecha_fin, mesesadelanto,  Number(id));
+                    }
+                }
 
                res.status(200).json({
                    msg: `Registro ${fecha_inicio} actualizado exitosamente!`,
@@ -130,7 +179,7 @@ export const DeleteContratoAlquiler = async (req: Request, res: Response) => {
         const deleted = await ContratoAlquiler.destroy({
             where: { id }
         });
-    
+
         if (deleted) {
             res.status(200).json({
                 msg: `Registro con ID ${id} eliminado exitosamente!`
@@ -156,7 +205,7 @@ export const actualizarEstado = async (req: Request, res: Response) => {
     try {
            // Buscar el cuartos actual en la base de datos
            var existingCuarto = await ContratoAlquiler.findOne({ where: { id } });
-        
+
            if (!existingCuarto) {
                return res.status(404).json({
                    msg: 'Registro no encontrado',
@@ -166,7 +215,7 @@ export const actualizarEstado = async (req: Request, res: Response) => {
            const [updated] = await ContratoAlquiler.update({
                estado: estado
            }, { where: { id } });
-   
+
            if (updated) {
                res.status(200).json({
                    msg: `Registro actualizado exitosamente!`,
@@ -187,14 +236,14 @@ export const actualizarEstado = async (req: Request, res: Response) => {
 export var VerPDFContrato = async (req: Request, res: Response):Promise<void> => {
     var { id } = req.params;
     try {
-        const SetContratoAlquiler = await ContratoAlquiler.findOne({  
+        const SetContratoAlquiler = await ContratoAlquiler.findOne({
             include: [
                 { model: Inquilino },
                 { model: Cuarto }
             ],
              where: { id }
         });
-        
+
         if (SetContratoAlquiler) {
                  //aqui ocupar el servicio de para generar pdf
             var buffer = await appService.PDFcontrato(SetContratoAlquiler);
@@ -212,7 +261,7 @@ export var VerPDFContrato = async (req: Request, res: Response):Promise<void> =>
             });
         }
 
- 
+
 
     } catch (error) {
         res.status(400).json({
@@ -225,9 +274,9 @@ export var VerPDFContrato = async (req: Request, res: Response):Promise<void> =>
 
 export var ContratosPorVencer = async (req: Request, res: Response)=> {
     try{
-      
+
         const resultados: any = await sequelize.query(`
-           			SELECT contratoalquilers.id, DATE(contratoalquilers.fecha_inicio) fechainicio, DATE(contratoalquilers.fecha_fin) fechafin,  
+           			SELECT contratoalquilers.id, DATE(contratoalquilers.fecha_inicio) fechainicio, DATE(contratoalquilers.fecha_fin) fechafin,
             		CASE
                     WHEN estado = false THEN 'Pendiente'
                     WHEN estado = true THEN 'Pagada'

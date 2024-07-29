@@ -7,6 +7,7 @@ import { Inquilino } from '../models/inquilino';
 import { Cuarto } from '../models/cuartos';
 import { User } from '../models/user';
 import sequelize from '../db/connection';
+import { TiempoAnticipo } from '../models/tiempoanticipo';
 
 //listar Registros
 export const getDeudas = async (req: Request, res: Response) => {
@@ -64,17 +65,42 @@ export const GetDeuda = async (req: Request, res: Response) => {
 
 //Guardar Registro
 export const NewDeuda = async (req: Request, res: Response) => {
-    const{ monto_deuda, fecha, mes, estado, id_contrato }= req.body;
+    const{ monto_deuda, fecha, mes, estado, id_contrato,id_usuario }= req.body;
     try {
         // Guardarmos RegistroDeudas en la base de datos
-        await Deuda.create({
+        const deudaCreada :any = await Deuda.create({
             monto_deuda: monto_deuda,
             fecha:fecha,
             mes: mes,
             estado: estado,
             id_contrato: id_contrato
         })
-    
+           // Ajustamos la fecha
+           const fechaDeuda = new Date(fecha);
+           fechaDeuda.setDate(fechaDeuda.getDate() + 1);
+           const anio = fechaDeuda.getFullYear();
+   
+           // Buscamos si hay un anticipo para el contrato, mes y año especificados
+           const hayAnticipo = await TiempoAnticipo.findOne({ where: { id_contrato: id_contrato, mes: mes, gestion: anio } });
+   
+           if (hayAnticipo) {
+               // Creamos un registro de pago
+               await Pago.create({
+                   monto_pagado: monto_deuda,
+                   metodo_pago: 'Anticipo en Contrato',
+                   fecha: fecha,
+                   adelanto: 0,
+                   mes: mes,
+                   id_deuda: deudaCreada.id,
+                   id_user: id_usuario // Asegúrate de que este ID sea correcto según tu lógica de negocio
+               });
+   
+               // Actualizamos el estado de la deuda a pagado (1)
+               await Deuda.update({
+                   estado: 1 // Pagado
+               }, { where: { id: deudaCreada.id } });
+           }
+
         res.json({
             msg: `Deuda  ${monto_deuda} creado exitosamente!`
         })

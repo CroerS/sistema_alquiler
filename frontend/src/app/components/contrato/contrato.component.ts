@@ -116,6 +116,20 @@ export class ContratoComponent implements OnInit {
   //Calcular monto de anticipo
   CalculaMontAntipo(){
     this.pagoadelanto = this.costoMensualCuarto*this.mesesadelanto;
+
+
+    let fechaInicio = new Date(this.fecha_inicio);
+    fechaInicio.setDate(fechaInicio.getDate() + 1); // Ajustar inicio al día siguiente para evitar duplicados
+    let fechaFin = new Date(this.fecha_fin);
+    fechaFin.setDate(fechaFin.getDate() + 1);
+
+    const diffInMonths = (fechaFin.getFullYear() - fechaInicio.getFullYear()) * 12 + (fechaFin.getMonth() - fechaInicio.getMonth());
+    console.log(fechaInicio)
+    console.log(fechaFin)
+    if (this.mesesadelanto > diffInMonths) {
+      this.toastr.error('La cantidad de meses ingresada no está dentro del rango de fechas', 'Error');
+    }
+
   }
   onInputChange(event: any): void {
     this.CalculaMontAntipo()

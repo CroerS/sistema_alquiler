@@ -100,7 +100,7 @@ export class DeudaComponent implements OnInit {
   
   async actualizarDeudas() {
     try {
-
+      if(this.id_contrato !=0){
       // Iterar sobre cada contrato y registrar las deudas mensuales
       for (var contrato of this.listaContrato!) {
         if(contrato.estado==true){ //contratos vigentes
@@ -110,45 +110,13 @@ export class DeudaComponent implements OnInit {
         
       // Después de completar el registro de deudas, obtener la lista de deudas
       this.getListaDeudas();
-      // Iterar sobre cada contrato y registrar las deudas mensuales
-      // for (var contrato of this.listaContrato!) {
-      //   if(contrato.mesesadelanto>0 && contrato.estado===true){
-      //     await this.RegistroAutomaticoPagos(contrato)
-      //     console.log("contrato: "+ contrato.id)
-      //   }
-      // }
+      }else{
+        this.toastr.error('Seleccione un Contrato, Por favor.', 'Error');
+      }
 
-      // this.getListaDeudas();
     } catch (error) {
       console.error('Error al obtener la lista de contratos:', error);
     }
-  }
-  
-  async RegistroAutomaticoPagos(contrato: Contrato) {
-    let count = 0;
-    let mesespagados = "1-2023,2-2023,3-2023,"
-    while(count < contrato.mesesadelanto){
-     let deuda =  this.listaDeuda.find(x=>x.id_contrato===contrato.id);
-     this.listaDeuda = this.listaDeuda.filter(deuda => deuda.id !== deuda.id);
-
-      var pago:  any = {
-        id:0,
-        fecha: deuda?.fecha,
-        mes:  deuda?.mes,
-        monto_pagado: deuda?.monto_deuda,
-        metodo_pago: "Anticipo en Contrato",
-        adelanto: "0",
-        id_deuda: deuda?.id,
-      }
-      var estado_deuda: any = { estado: true }
-      await lastValueFrom(this._deudaService.updateEstado(deuda?.id!,estado_deuda)) ;
-      await lastValueFrom(this._pagodeudaService.save(pago)) ;
-   
-      count++;
-    }
-   
-
-
   }
 
   async registrarDeudasMensuales(contrato: Contrato) {
@@ -179,7 +147,8 @@ export class DeudaComponent implements OnInit {
                 mes: mes,
                 fecha: fecha,
                 estado: false, // Asumiendo que la deuda es pendiente
-                id_contrato: contrato.id
+                id_contrato: contrato.id,
+                id_usuario:this.usuario.id
               };
       
               await this._deudaService.save(deuda).toPromise(); // Esperar a que se guarde la deuda

@@ -6,5 +6,6 @@ export interface Deuda {
     fecha: Date,
     estado: boolean,
     id_contrato: number,
+    id_usuario?: number,
     ContratoAlquiler?: Contrato // Relación con Inquilino
 }

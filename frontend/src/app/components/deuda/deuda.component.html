@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-auto ">
                   <select [(ngModel)]="id_contrato"(change)="onSelectChange($event)" class="form-select form-select-sm " name="contrato" id="contrato" aria-placeholder="Contrato">
-                      <option value="0" selected>Seleccionar Todos</option>
+                      <option value="0" selected>Seleccione un contrato</option>
                       <option *ngFor="let item of listaContratoFiltro" [value]="item.id">{{ item.inquilino?.nombre }} {{ item.inquilino?.apellido }}, Nro. Cuarto: {{ item.cuarto?.numero }}</option>
                   </select>
                 </div>
